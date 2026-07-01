@@ -26,6 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -137,6 +138,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
         painel.setBorder(new EmptyBorder(18, 22, 18, 22));
 
         JLabel titulo = new JLabel("Clinica Veterinaria em Tempo Real");
+        titulo.setIcon(new IconePata(new Color(239, 255, 249), 32));
+        titulo.setIconTextGap(12);
         titulo.setForeground(Color.WHITE);
         titulo.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
 
@@ -155,6 +158,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
         rotuloStatus.setHorizontalAlignment(SwingConstants.CENTER);
         rotuloStatus.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
         rotuloStatus.setBorder(new EmptyBorder(8, 14, 8, 14));
+        rotuloStatus.setIcon(new IconePata(PRIMARIA, 18));
+        rotuloStatus.setIconTextGap(8);
 
         painel.add(textos, BorderLayout.WEST);
         painel.add(rotuloStatus, BorderLayout.EAST);
@@ -247,6 +252,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
         painel.setPreferredSize(new Dimension(150, 170));
 
         JLabel rotulo = new JLabel(titulo);
+        rotulo.setIcon(new IconePata(cor, 16));
+        rotulo.setIconTextGap(7);
         rotulo.setForeground(TEXTO_SUAVE);
         rotulo.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 
@@ -303,9 +310,9 @@ public class ClinicaVeterinariaInterface extends JFrame {
         configurarTabela(tabelaHistorico);
         historico.add(new JScrollPane(tabelaHistorico), BorderLayout.CENTER);
 
-        abas.addTab("Fila", fila);
-        abas.addTab("Equipe", equipe);
-        abas.addTab("Historico", historico);
+        abas.addTab("Fila", new IconePata(PRIMARIA, 14), fila);
+        abas.addTab("Equipe", new IconePata(SUCESSO, 14), equipe);
+        abas.addTab("Historico", new IconePata(new Color(132, 92, 22), 14), historico);
         return abas;
     }
 
@@ -315,6 +322,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
         painel.setBorder(new EmptyBorder(12, 16, 12, 16));
 
         JLabel label = new JLabel("Progresso geral");
+        label.setIcon(new IconePata(PRIMARIA, 15));
+        label.setIconTextGap(7);
         label.setForeground(TEXTO_SUAVE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 
@@ -328,6 +337,10 @@ public class ClinicaVeterinariaInterface extends JFrame {
         acoes.setOpaque(false);
         estilizarBotaoSecundario(botaoSalvarHistorico);
         estilizarBotaoSecundario(botaoSalvarRelatorio);
+        botaoSalvarHistorico.setIcon(new IconePata(PRIMARIA_ESCURO, 14));
+        botaoSalvarHistorico.setIconTextGap(8);
+        botaoSalvarRelatorio.setIcon(new IconePata(PRIMARIA_ESCURO, 14));
+        botaoSalvarRelatorio.setIconTextGap(8);
         botaoSalvarHistorico.setEnabled(false);
         botaoSalvarRelatorio.setEnabled(false);
         acoes.add(botaoSalvarHistorico);
@@ -348,6 +361,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
 
         if (titulo != null) {
             JLabel label = new JLabel(titulo);
+            label.setIcon(new IconePata(PRIMARIA, 15));
+            label.setIconTextGap(7);
             label.setForeground(TEXTO);
             label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
             label.setBorder(new EmptyBorder(0, 0, 12, 0));
@@ -370,6 +385,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
         botao.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
         botao.setFocusPainted(false);
         botao.setBorder(new EmptyBorder(10, 14, 10, 14));
+        botao.setIcon(new IconePata(Color.WHITE, 15));
+        botao.setIconTextGap(8);
     }
 
     private void estilizarBotaoSecundario(JButton botao) {
@@ -378,6 +395,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
         botao.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
         botao.setFocusPainted(false);
         botao.setBorder(new EmptyBorder(10, 14, 10, 14));
+        botao.setIcon(new IconePata(PRIMARIA_ESCURO, 15));
+        botao.setIconTextGap(8);
     }
 
     private void configurarTabela(JTable tabela) {
@@ -893,6 +912,54 @@ public class ClinicaVeterinariaInterface extends JFrame {
                 atualizarFuncionario(numero, "Interrompido", "-", "-", "-", "-");
                 log(getName() + " interrompido.");
             }
+        }
+    }
+
+    private static class IconePata implements Icon {
+        private final Color cor;
+        private final int tamanho;
+
+        IconePata(Color cor, int tamanho) {
+            this.cor = cor;
+            this.tamanho = tamanho;
+        }
+
+        @Override
+        public int getIconWidth() {
+            return tamanho;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return tamanho;
+        }
+
+        @Override
+        public void paintIcon(Component componente, Graphics grafico, int x, int y) {
+            Graphics2D g2 = (Graphics2D) grafico.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            Color corDesenho = componente != null && !componente.isEnabled()
+                    ? new Color(148, 162, 174)
+                    : cor;
+            g2.setColor(corDesenho);
+
+            double escala = tamanho / 24.0;
+            preencherOval(g2, x, y, escala, 7, 12, 10, 9);
+            preencherOval(g2, x, y, escala, 2, 8, 6, 6);
+            preencherOval(g2, x, y, escala, 7, 3, 6, 6);
+            preencherOval(g2, x, y, escala, 13, 3, 6, 6);
+            preencherOval(g2, x, y, escala, 18, 8, 6, 6);
+
+            g2.dispose();
+        }
+
+        private void preencherOval(Graphics2D g2, int origemX, int origemY, double escala, int x, int y, int largura, int altura) {
+            g2.fillOval(
+                    origemX + (int) Math.round(x * escala),
+                    origemY + (int) Math.round(y * escala),
+                    Math.max(3, (int) Math.round(largura * escala)),
+                    Math.max(3, (int) Math.round(altura * escala)));
         }
     }
 
