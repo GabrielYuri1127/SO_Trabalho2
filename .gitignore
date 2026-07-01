@@ -1,0 +1,12 @@
+*.class
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+resultados.csv
+grafico_tempos.png
+grafico_speedup.png
+__pycache__/
+.idea/
+.vscode/
