@@ -68,4 +68,10 @@ Executar:
 java -cp questao2_clinica_veterinaria ClinicaVeterinariaInterface
 ```
 
-Na interface, o usuario informa a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. A tela mostra cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores simulados, logs em tempo real e uma barra de progresso.
+Na interface, o usuario informa a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. A tela mostra cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores simulados, historico de atendimentos, logs em tempo real, painel visual com movimento dos pets e uma barra de progresso.
+
+Ao final da simulacao, a interface habilita:
+
+- salvar historico em CSV;
+- salvar relatorio TXT com resumo dos atendimentos;
+- consultar a receita total simulada.

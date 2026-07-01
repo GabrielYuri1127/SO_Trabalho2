@@ -7,7 +7,15 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -16,6 +24,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,6 +35,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -37,6 +47,7 @@ import javax.swing.table.JTableHeader;
 
 public class ClinicaVeterinariaInterface extends JFrame {
     private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+    private static final DateTimeFormatter FORMATO_ARQUIVO = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
 
     private static final Color FUNDO = new Color(239, 244, 248);
     private static final Color CARD = Color.WHITE;
@@ -55,21 +66,27 @@ public class ClinicaVeterinariaInterface extends JFrame {
     private final JButton botaoLimpar = new JButton("Limpar painel");
     private final JTextArea areaLogs = new JTextArea();
     private final JProgressBar barraProgresso = new JProgressBar();
+    private final JButton botaoSalvarHistorico = new JButton("Salvar historico CSV");
+    private final JButton botaoSalvarRelatorio = new JButton("Salvar relatorio TXT");
 
     private final JLabel rotuloStatus = new JLabel("Pronta para iniciar");
     private final JLabel cardFila = new JLabel("0");
     private final JLabel cardConcluidos = new JLabel("0");
     private final JLabel cardEmergencias = new JLabel("0");
     private final JLabel cardTempo = new JLabel("0,00 s");
+    private final JLabel cardReceita = new JLabel("R$ 0,00");
 
     private final DefaultTableModel modeloFila = criarModelo(new String[]{"Pet", "Tutor", "Servico", "Ocorrencia", "Valor", "Prioridade"});
     private final DefaultTableModel modeloEquipe = criarModelo(new String[]{"Funcionario", "Estado", "Pet", "Tutor", "Servico", "Valor"});
+    private final DefaultTableModel modeloHistorico = criarModelo(new String[]{"Horario", "Funcionario", "Pet", "Tutor", "Telefone", "Bairro", "Servico", "Ocorrencia", "Valor"});
     private final JTable tabelaFila = new JTable(modeloFila);
     private final JTable tabelaEquipe = new JTable(modeloEquipe);
+    private final JTable tabelaHistorico = new JTable(modeloHistorico);
 
     private Timer timerTempo;
     private long inicioSimulacao;
     private int emergenciasRegistradas;
+    private double valorTotalHistorico;
     private final Set<String> animaisRetiradosAntesDeExibir = new HashSet<String>();
 
     public ClinicaVeterinariaInterface() {
@@ -152,6 +169,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
         topo.setOpaque(false);
         topo.add(criarPainelControles(), BorderLayout.WEST);
         topo.add(criarPainelIndicadores(), BorderLayout.CENTER);
+        topo.add(criarPainelPet(), BorderLayout.EAST);
 
         JSplitPane divisorPrincipal = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, criarPainelLogs(), criarPainelOperacao());
         divisorPrincipal.setResizeWeight(0.56);
@@ -213,11 +231,12 @@ public class ClinicaVeterinariaInterface extends JFrame {
     }
 
     private JPanel criarPainelIndicadores() {
-        JPanel painel = new JPanel(new GridLayout(1, 4, 12, 0));
+        JPanel painel = new JPanel(new GridLayout(1, 5, 12, 0));
         painel.setOpaque(false);
         painel.add(criarIndicador("Na fila", cardFila, "Atendimentos aguardando", new Color(39, 99, 164)));
         painel.add(criarIndicador("Concluidos", cardConcluidos, "Total finalizado", SUCESSO));
         painel.add(criarIndicador("Emergencias", cardEmergencias, "Prioridade automatica", ALERTA));
+        painel.add(criarIndicador("Receita", cardReceita, "Valor simulado", new Color(132, 92, 22)));
         painel.add(criarIndicador("Tempo", cardTempo, "Duracao da simulacao", PRIMARIA));
         return painel;
     }
@@ -244,6 +263,13 @@ public class ClinicaVeterinariaInterface extends JFrame {
         return painel;
     }
 
+    private JPanel criarPainelPet() {
+        JPanel painel = criarCard("Movimento pet");
+        painel.setPreferredSize(new Dimension(180, 170));
+        painel.add(new PainelPetAnimado(), BorderLayout.CENTER);
+        return painel;
+    }
+
     private JPanel criarPainelLogs() {
         JPanel painel = criarCard("Eventos em tempo real");
 
@@ -262,9 +288,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
         return painel;
     }
 
-    private JPanel criarPainelOperacao() {
-        JPanel painel = new JPanel(new GridLayout(2, 1, 0, 16));
-        painel.setOpaque(false);
+    private JTabbedPane criarPainelOperacao() {
+        JTabbedPane abas = new JTabbedPane();
 
         JPanel fila = criarCard("Fila prioritaria");
         configurarTabela(tabelaFila);
@@ -274,9 +299,14 @@ public class ClinicaVeterinariaInterface extends JFrame {
         configurarTabela(tabelaEquipe);
         equipe.add(new JScrollPane(tabelaEquipe), BorderLayout.CENTER);
 
-        painel.add(fila);
-        painel.add(equipe);
-        return painel;
+        JPanel historico = criarCard("Historico de atendimentos");
+        configurarTabela(tabelaHistorico);
+        historico.add(new JScrollPane(tabelaHistorico), BorderLayout.CENTER);
+
+        abas.addTab("Fila", fila);
+        abas.addTab("Equipe", equipe);
+        abas.addTab("Historico", historico);
+        return abas;
     }
 
     private JPanel criarRodape() {
@@ -294,8 +324,18 @@ public class ClinicaVeterinariaInterface extends JFrame {
         barraProgresso.setBackground(new Color(224, 233, 240));
         barraProgresso.setPreferredSize(new Dimension(300, 24));
 
+        JPanel acoes = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        acoes.setOpaque(false);
+        estilizarBotaoSecundario(botaoSalvarHistorico);
+        estilizarBotaoSecundario(botaoSalvarRelatorio);
+        botaoSalvarHistorico.setEnabled(false);
+        botaoSalvarRelatorio.setEnabled(false);
+        acoes.add(botaoSalvarHistorico);
+        acoes.add(botaoSalvarRelatorio);
+
         painel.add(label, BorderLayout.WEST);
         painel.add(barraProgresso, BorderLayout.CENTER);
+        painel.add(acoes, BorderLayout.EAST);
         return painel;
     }
 
@@ -371,6 +411,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
     private void configurarEventos() {
         botaoIniciar.addActionListener(evento -> iniciarSimulacao());
         botaoLimpar.addActionListener(evento -> limparPainel());
+        botaoSalvarHistorico.addActionListener(evento -> salvarHistoricoCsv());
+        botaoSalvarRelatorio.addActionListener(evento -> salvarRelatorioTxt());
     }
 
     private void iniciarSimulacao() {
@@ -396,8 +438,10 @@ public class ClinicaVeterinariaInterface extends JFrame {
         areaLogs.setText("");
         modeloFila.setRowCount(0);
         modeloEquipe.setRowCount(0);
+        modeloHistorico.setRowCount(0);
         animaisRetiradosAntesDeExibir.clear();
         emergenciasRegistradas = 0;
+        valorTotalHistorico = 0.0;
 
         for (int i = 1; i <= funcionarios; i++) {
             modeloEquipe.addRow(new Object[]{"Funcionario-" + i, "Aguardando", "-", "-", "-", "-"});
@@ -407,6 +451,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
         cardConcluidos.setText("0");
         cardEmergencias.setText("0");
         cardTempo.setText("0,00 s");
+        cardReceita.setText("R$ 0,00");
 
         barraProgresso.setMinimum(0);
         barraProgresso.setMaximum(animais);
@@ -416,6 +461,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
         inicioSimulacao = System.nanoTime();
         iniciarRelogio();
         alterarControles(false);
+        botaoSalvarHistorico.setEnabled(false);
+        botaoSalvarRelatorio.setEnabled(false);
         atualizarStatus("Simulacao em andamento", new Color(255, 246, 214), new Color(119, 82, 0));
     }
 
@@ -428,12 +475,17 @@ public class ClinicaVeterinariaInterface extends JFrame {
         areaLogs.setText("");
         modeloFila.setRowCount(0);
         modeloEquipe.setRowCount(0);
+        modeloHistorico.setRowCount(0);
+        valorTotalHistorico = 0.0;
         cardFila.setText("0");
         cardConcluidos.setText("0");
         cardEmergencias.setText("0");
         cardTempo.setText("0,00 s");
+        cardReceita.setText("R$ 0,00");
         barraProgresso.setValue(0);
         barraProgresso.setString("0 / 0 atendimentos");
+        botaoSalvarHistorico.setEnabled(false);
+        botaoSalvarRelatorio.setEnabled(false);
         atualizarStatus("Pronta para iniciar", new Color(228, 247, 243), PRIMARIA_ESCURO);
     }
 
@@ -555,6 +607,27 @@ public class ClinicaVeterinariaInterface extends JFrame {
         });
     }
 
+    private void registrarHistorico(final AtendimentoVeterinario atendimento, final String funcionario) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                modeloHistorico.addRow(new Object[]{
+                        LocalTime.now().format(FORMATO_HORA),
+                        funcionario,
+                        atendimento.nomePet,
+                        atendimento.tutor,
+                        atendimento.telefoneTutor,
+                        atendimento.bairroTutor,
+                        atendimento.servico,
+                        atendimento.ocorrencia,
+                        atendimento.valorFormatado()
+                });
+                valorTotalHistorico += atendimento.valor;
+                cardReceita.setText(String.format("R$ %.2f", valorTotalHistorico));
+            }
+        });
+    }
+
     private void finalizarInterface(final int concluidos, final double tempoMs) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -565,11 +638,118 @@ public class ClinicaVeterinariaInterface extends JFrame {
                 modeloFila.setRowCount(0);
                 cardFila.setText("0");
                 alterarControles(true);
+                botaoSalvarHistorico.setEnabled(modeloHistorico.getRowCount() > 0);
+                botaoSalvarRelatorio.setEnabled(modeloHistorico.getRowCount() > 0);
                 atualizarTempo();
                 atualizarStatus("Finalizada: " + concluidos + " atendimentos", new Color(229, 247, 236), SUCESSO);
                 log(String.format("Resumo final exibido na interface. Tempo total: %.2f ms", tempoMs));
             }
         });
+    }
+
+    private void salvarHistoricoCsv() {
+        if (modeloHistorico.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Nao ha historico para salvar.", "Historico vazio", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        File arquivo = escolherArquivo("historico_atendimentos_" + LocalDateTime.now().format(FORMATO_ARQUIVO) + ".csv");
+        if (arquivo == null) {
+            return;
+        }
+
+        try {
+            salvarTabelaComoCsv(arquivo);
+            JOptionPane.showMessageDialog(this, "Historico salvo em:\n" + arquivo.getAbsolutePath(), "Historico salvo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException erro) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar historico: " + erro.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void salvarRelatorioTxt() {
+        if (modeloHistorico.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Nao ha atendimentos para gerar relatorio.", "Historico vazio", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        File arquivo = escolherArquivo("relatorio_atendimentos_" + LocalDateTime.now().format(FORMATO_ARQUIVO) + ".txt");
+        if (arquivo == null) {
+            return;
+        }
+
+        try {
+            salvarRelatorioTexto(arquivo);
+            JOptionPane.showMessageDialog(this, "Relatorio salvo em:\n" + arquivo.getAbsolutePath(), "Relatorio salvo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException erro) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar relatorio: " + erro.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private File escolherArquivo(String nomePadrao) {
+        JFileChooser seletor = new JFileChooser();
+        seletor.setSelectedFile(new File(nomePadrao));
+        int resultado = seletor.showSaveDialog(this);
+        if (resultado != JFileChooser.APPROVE_OPTION) {
+            return null;
+        }
+        return seletor.getSelectedFile();
+    }
+
+    private void salvarTabelaComoCsv(File arquivo) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo));
+        try {
+            for (int coluna = 0; coluna < modeloHistorico.getColumnCount(); coluna++) {
+                if (coluna > 0) {
+                    writer.write(",");
+                }
+                writer.write(escaparCsv(modeloHistorico.getColumnName(coluna)));
+            }
+            writer.newLine();
+
+            for (int linha = 0; linha < modeloHistorico.getRowCount(); linha++) {
+                for (int coluna = 0; coluna < modeloHistorico.getColumnCount(); coluna++) {
+                    if (coluna > 0) {
+                        writer.write(",");
+                    }
+                    writer.write(escaparCsv(String.valueOf(modeloHistorico.getValueAt(linha, coluna))));
+                }
+                writer.newLine();
+            }
+        } finally {
+            writer.close();
+        }
+    }
+
+    private void salvarRelatorioTexto(File arquivo) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo));
+        try {
+            writer.write("Relatorio de Atendimentos - Clinica Veterinaria");
+            writer.newLine();
+            writer.write("Gerado em: " + LocalDateTime.now());
+            writer.newLine();
+            writer.write("Atendimentos concluidos: " + modeloHistorico.getRowCount());
+            writer.newLine();
+            writer.write(String.format("Receita simulada: R$ %.2f", valorTotalHistorico));
+            writer.newLine();
+            writer.newLine();
+
+            for (int linha = 0; linha < modeloHistorico.getRowCount(); linha++) {
+                writer.write("Atendimento " + (linha + 1));
+                writer.newLine();
+                for (int coluna = 0; coluna < modeloHistorico.getColumnCount(); coluna++) {
+                    writer.write(modeloHistorico.getColumnName(coluna) + ": " + modeloHistorico.getValueAt(linha, coluna));
+                    writer.newLine();
+                }
+                writer.newLine();
+            }
+        } finally {
+            writer.close();
+        }
+    }
+
+    private String escaparCsv(String texto) {
+        String normalizado = texto == null ? "" : texto;
+        return "\"" + normalizado.replace("\"", "\"\"") + "\"";
     }
 
     private void atualizarStatus(String texto, Color fundo, Color corTexto) {
@@ -703,6 +883,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
 
                     Thread.sleep(atendimento.duracaoMs);
                     int total = concluidos.incrementAndGet();
+                    registrarHistorico(atendimento, getName());
                     atualizarProgresso(total, totalAnimais);
                     atualizarFuncionario(numero, "Aguardando", "-", "-", "-", "-");
                     log(getName() + " FINALIZOU " + atendimento.nomePet + ". Valor: " + atendimento.valorFormatado() + ". Total concluido: " + total);
@@ -736,6 +917,67 @@ public class ClinicaVeterinariaInterface extends JFrame {
             }
 
             return componente;
+        }
+    }
+
+    private class PainelPetAnimado extends JPanel {
+        private int passo;
+
+        PainelPetAnimado() {
+            setOpaque(false);
+            Timer timer = new Timer(180, evento -> {
+                passo = (passo + 1) % 40;
+                repaint();
+            });
+            timer.start();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int largura = getWidth();
+            int altura = getHeight();
+            g2.setColor(new Color(241, 248, 247));
+            g2.fillRoundRect(8, 8, largura - 16, altura - 16, 18, 18);
+
+            int x = 22 + (passo % 18);
+            int y = altura / 2 + 8;
+            desenharPet(g2, x, y);
+            desenharPata(g2, largura - 58, 38, 0.85);
+            desenharPata(g2, largura - 94, 76, 0.65);
+            desenharPata(g2, largura - 45, 108, 0.55);
+
+            g2.setColor(TEXTO_SUAVE);
+            g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+            g2.drawString("Pets chegando", 22, 28);
+            g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+            g2.drawString("fila e equipe em tempo real", 22, 44);
+            g2.dispose();
+        }
+
+        private void desenharPet(Graphics2D g2, int x, int y) {
+            g2.setColor(new Color(98, 134, 108));
+            g2.fillOval(x + 18, y - 28, 62, 34);
+            g2.fillOval(x + 66, y - 42, 28, 28);
+            g2.fillOval(x + 70, y - 55, 10, 18);
+            g2.fillOval(x + 84, y - 55, 10, 18);
+            g2.fillRect(x + 28, y, 10, 18);
+            g2.fillRect(x + 62, y, 10, 18);
+            g2.setColor(new Color(65, 91, 73));
+            g2.fillOval(x + 86, y - 32, 4, 4);
+            g2.drawArc(x + 4, y - 26, 24, 18, 20, 130);
+        }
+
+        private void desenharPata(Graphics2D g2, int x, int y, double escala) {
+            int s = (int) (10 * escala);
+            g2.setColor(new Color(193, 215, 207));
+            g2.fillOval(x, y, s + 7, s + 5);
+            g2.fillOval(x - s, y - s, s, s);
+            g2.fillOval(x + 2, y - s - 4, s, s);
+            g2.fillOval(x + s + 3, y - s, s, s);
         }
     }
 }

@@ -148,7 +148,7 @@ Recursos usados:
 
 ### Interface grafica
 
-Tambem foi criada uma interface grafica em Swing para facilitar a demonstracao. A tela permite informar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a simulacao, a interface apresenta cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores cobrados, logs em tempo real e uma barra de progresso com a quantidade de atendimentos concluidos.
+Tambem foi criada uma interface grafica em Swing para facilitar a demonstracao. A tela permite informar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a simulacao, a interface apresenta cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores cobrados, historico de atendimentos, receita simulada, logs em tempo real, painel visual com movimento dos pets e uma barra de progresso com a quantidade de atendimentos concluidos. Ao final, e possivel salvar o historico em CSV e gerar um relatorio TXT.
 
 Arquivo: `questao2_clinica_veterinaria/ClinicaVeterinariaInterface.java`
 
