@@ -10,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.BorderFactory;
@@ -68,6 +70,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
     private Timer timerTempo;
     private long inicioSimulacao;
     private int emergenciasRegistradas;
+    private final Set<String> animaisRetiradosAntesDeExibir = new HashSet<String>();
 
     public ClinicaVeterinariaInterface() {
         super("Clinica Veterinaria em Tempo Real");
@@ -162,8 +165,10 @@ public class ClinicaVeterinariaInterface extends JFrame {
 
     private JPanel criarPainelControles() {
         JPanel painel = criarCard("Parametros da simulacao");
-        painel.setLayout(new GridBagLayout());
         painel.setPreferredSize(new Dimension(430, 170));
+
+        JPanel conteudo = new JPanel(new GridBagLayout());
+        conteudo.setOpaque(false);
 
         estilizarCampo(campoFuncionarios);
         estilizarCampo(campoAnimais);
@@ -175,18 +180,20 @@ public class ClinicaVeterinariaInterface extends JFrame {
         c.insets = new Insets(8, 8, 8, 8);
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        adicionarCampo(painel, c, 0, "Funcionarios", campoFuncionarios);
-        adicionarCampo(painel, c, 1, "Animais", campoAnimais);
-        adicionarCampo(painel, c, 2, "Intervalo (ms)", campoIntervalo);
+        adicionarCampo(conteudo, c, 0, "Funcionarios", campoFuncionarios);
+        adicionarCampo(conteudo, c, 1, "Animais", campoAnimais);
+        adicionarCampo(conteudo, c, 2, "Intervalo (ms)", campoIntervalo);
 
         c.gridy = 2;
         c.gridx = 0;
         c.gridwidth = 2;
-        painel.add(botaoIniciar, c);
+        conteudo.add(botaoIniciar, c);
 
         c.gridx = 2;
         c.gridwidth = 1;
-        painel.add(botaoLimpar, c);
+        conteudo.add(botaoLimpar, c);
+
+        painel.add(conteudo, BorderLayout.CENTER);
 
         return painel;
     }
@@ -392,6 +399,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
         areaLogs.setText("");
         modeloFila.setRowCount(0);
         modeloEquipe.setRowCount(0);
+        animaisRetiradosAntesDeExibir.clear();
         emergenciasRegistradas = 0;
 
         for (int i = 1; i <= funcionarios; i++) {
@@ -480,12 +488,18 @@ public class ClinicaVeterinariaInterface extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                modeloFila.addRow(new Object[]{animal.nome, animal.servico, animal.prioridadeTexto()});
-                cardFila.setText(String.valueOf(modeloFila.getRowCount()));
                 if (animal.emergencia) {
                     emergenciasRegistradas++;
                     cardEmergencias.setText(String.valueOf(emergenciasRegistradas));
                 }
+
+                if (animaisRetiradosAntesDeExibir.remove(animal.nome)) {
+                    cardFila.setText(String.valueOf(modeloFila.getRowCount()));
+                    return;
+                }
+
+                modeloFila.addRow(new Object[]{animal.nome, animal.servico, animal.prioridadeTexto()});
+                cardFila.setText(String.valueOf(modeloFila.getRowCount()));
             }
         });
     }
@@ -494,11 +508,16 @@ public class ClinicaVeterinariaInterface extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                boolean removido = false;
                 for (int i = 0; i < modeloFila.getRowCount(); i++) {
                     if (animal.nome.equals(modeloFila.getValueAt(i, 0))) {
                         modeloFila.removeRow(i);
+                        removido = true;
                         break;
                     }
+                }
+                if (!removido) {
+                    animaisRetiradosAntesDeExibir.add(animal.nome);
                 }
                 cardFila.setText(String.valueOf(modeloFila.getRowCount()));
             }
@@ -537,6 +556,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
                 if (timerTempo != null) {
                     timerTempo.stop();
                 }
+                modeloFila.setRowCount(0);
+                cardFila.setText("0");
                 alterarControles(true);
                 atualizarTempo();
                 atualizarStatus("Finalizada: " + concluidos + " atendimentos", new Color(229, 247, 236), SUCESSO);
