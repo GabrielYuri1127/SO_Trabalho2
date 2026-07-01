@@ -101,6 +101,7 @@ A interface grafica usa Java Swing e permite configurar esses parametros em uma 
 Depois de gerar o CSV, execute:
 
 ```sh
+python -m pip install -r requirements.txt
 python scripts/gerar_grafico.py questao1_produto_escalar/resultados.csv
 ```
 

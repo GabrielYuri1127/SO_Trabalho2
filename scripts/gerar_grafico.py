@@ -3,7 +3,15 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ModuleNotFoundError:
+    print("Erro: o pacote matplotlib nao esta instalado neste Python.")
+    print("Instale com:")
+    print("  python -m pip install -r requirements.txt")
+    print("ou:")
+    print("  python -m pip install matplotlib")
+    raise SystemExit(1)
 
 
 def ler_csv(caminho_csv):
