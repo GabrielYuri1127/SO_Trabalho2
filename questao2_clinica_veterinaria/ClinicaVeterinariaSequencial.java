@@ -9,7 +9,7 @@ public class ClinicaVeterinariaSequencial {
         int intervaloChegadaMs = args.length >= 2 ? Integer.parseInt(args[1]) : 200;
 
         log("CLINICA SEQUENCIAL INICIADA");
-        log("Tudo acontece um atendimento por vez, sem uso de threads de funcionarios.");
+        log("MODO SEQUENCIAL: sem threads, fluxo unico equivalente a um unico funcionario atendendo um pet por vez.");
 
         long inicio = System.nanoTime();
         for (int i = 1; i <= quantidadeAnimais; i++) {
@@ -38,7 +38,7 @@ public class ClinicaVeterinariaSequencial {
     }
 
     private static void atender(AtendimentoVeterinario atendimento) throws InterruptedException {
-        String funcionario = "Veterinario sequencial";
+        String funcionario = "Funcionario unico sequencial";
         log("Inicio do atendimento: " + atendimento.resumoAtendimento(funcionario));
         if (atendimento.emergencia) {
             log("EMERGENCIA detectada. Atendimento clinico prioritario, exames rapidos e medicacao.");

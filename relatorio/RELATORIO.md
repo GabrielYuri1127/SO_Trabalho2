@@ -127,7 +127,7 @@ A aplicacao escolhida foi uma Clinica Veterinaria em Tempo Real. A simulacao env
 
 ### Versao sequencial
 
-Na versao sequencial, cada animal passa por todas as etapas antes que o proximo seja atendido. Isso mostra uma limitacao importante: mesmo que existam varios funcionarios ou setores em uma clinica real, o programa sem threads representa tudo acontecendo um por vez.
+Na versao sequencial, cada animal passa por todas as etapas antes que o proximo seja atendido. Isso mostra uma limitacao importante: mesmo que existam varios funcionarios ou setores em uma clinica real, o programa sem threads representa tudo acontecendo um por vez. Portanto, para fins de comparacao, essa versao equivale a um unico funcionario em um unico fluxo de atendimento.
 
 Arquivo: `questao2_clinica_veterinaria/ClinicaVeterinariaSequencial.java`
 
@@ -148,7 +148,7 @@ Recursos usados:
 
 ### Interface grafica
 
-Tambem foi criada uma interface grafica em Swing para facilitar a demonstracao. A tela permite informar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a simulacao, a interface apresenta cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores cobrados, historico de atendimentos, receita simulada, logs em tempo real, painel visual com movimento dos pets e uma barra de progresso com a quantidade de atendimentos concluidos. Ao final, e possivel salvar o historico em CSV e gerar um relatorio TXT.
+Tambem foi criada uma interface grafica em Swing para facilitar a demonstracao da versao com threads. A tela permite informar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a simulacao, a interface apresenta cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores cobrados, historico de atendimentos, receita simulada, logs em tempo real, painel visual com movimento dos pets e uma barra de progresso com a quantidade de atendimentos concluidos. Ao final, e possivel salvar o historico em CSV e gerar um relatorio TXT.
 
 Arquivo: `questao2_clinica_veterinaria/ClinicaVeterinariaInterface.java`
 

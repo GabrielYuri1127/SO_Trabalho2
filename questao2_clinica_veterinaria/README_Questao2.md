@@ -25,6 +25,8 @@ Na classe `ClinicaVeterinariaSequencial`, todos os passos acontecem um por vez:
 
 Isso facilita visualizar a limitacao da programacao sequencial: mesmo quando existem varios tipos de servico, apenas uma atividade acontece por vez.
 
+Nesta versao, a clinica e representada como um unico fluxo de execucao, equivalente a um unico funcionario atendendo um pet por vez.
+
 ## Versao com threads
 
 Na classe `ClinicaVeterinariaThreads`, a clinica usa:
@@ -61,6 +63,8 @@ Na saida, observe o horario, o nome da thread e a prioridade dos atendimentos de
 ## Interface grafica
 
 A classe `ClinicaVeterinariaInterface` implementa uma janela em Java Swing para demonstrar o funcionamento da clinica com threads.
+
+A interface representa a versao com threads: recepcao e varios funcionarios atuando simultaneamente. Isso deve ser comparado com a versao sequencial, que equivale a um unico funcionario.
 
 Executar:
 

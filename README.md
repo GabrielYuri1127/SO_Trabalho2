@@ -94,6 +94,8 @@ java -cp questao2_clinica_veterinaria ClinicaVeterinariaInterface
 
 Na versao com threads, os parametros sao: quantidade de funcionarios, quantidade de animais e intervalo de chegada em milissegundos.
 
+Na versao sequencial da Questao 2, a clinica e simulada como um unico fluxo de execucao: equivale a um unico funcionario atendendo um pet por vez. Na versao com threads e na interface grafica, a recepcao e varios funcionarios trabalham simultaneamente.
+
 A interface grafica usa Java Swing e permite configurar esses parametros em uma janela profissional, com cards de indicadores, fila prioritaria em tabela, painel de funcionarios, historico de atendimentos, receita simulada, logs em tempo real, barra de progresso e painel visual com movimento dos pets. A simulacao usa dados ficticios realistas, incluindo nome do pet, tutor, telefone, bairro, funcionario responsavel, ocorrencia do atendimento e valor cobrado. Ao final, a interface pode salvar o historico em CSV e um relatorio TXT.
 
 ## CSV e graficos

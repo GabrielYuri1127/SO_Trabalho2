@@ -140,7 +140,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
         titulo.setForeground(Color.WHITE);
         titulo.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
 
-        JLabel subtitulo = new JLabel("Recepcao, fila prioritaria, funcionarios e emergencias acompanhados ao vivo");
+        JLabel subtitulo = new JLabel("VERSAO COM THREADS: recepcao e varios funcionarios simultaneos; sem threads = um unico funcionario em fluxo sequencial");
         subtitulo.setForeground(new Color(213, 236, 234));
         subtitulo.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 13));
 
@@ -182,7 +182,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
     }
 
     private JPanel criarPainelControles() {
-        JPanel painel = criarCard("Parametros da simulacao");
+        JPanel painel = criarCard("Parametros da simulacao com threads");
         painel.setPreferredSize(new Dimension(430, 170));
 
         JPanel conteudo = new JPanel(new GridBagLayout());
