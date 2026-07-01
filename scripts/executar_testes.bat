@@ -15,4 +15,7 @@ java -cp questao2_clinica_veterinaria ClinicaVeterinariaSequencial 5 50
 echo.
 echo Teste Questao 2 - Threads
 java -cp questao2_clinica_veterinaria ClinicaVeterinariaThreads 3 8 50
+echo.
+echo Interface grafica da Questao 2:
+echo java -cp questao2_clinica_veterinaria ClinicaVeterinariaInterface
 endlocal

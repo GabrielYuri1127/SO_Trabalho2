@@ -55,7 +55,7 @@ Onde:
 
 ## Tabelas-modelo de resultados
 
-### Computador 1
+### Computador 1 - 12 CPUs
 
 | Tamanho do vetor | Threads | Tempo sequencial (ms) | Tempo paralelo (ms) | Speedup |
 | --- | ---: | ---: | ---: | ---: |
@@ -69,8 +69,23 @@ Onde:
 | 100000 | 4 | preencher | preencher | preencher |
 | 100000 | 8 | preencher | preencher | preencher |
 | 100000 | 16 | preencher | preencher | preencher |
+| 1000000 | 1 | preencher | preencher | preencher |
+| 1000000 | 2 | preencher | preencher | preencher |
+| 1000000 | 4 | preencher | preencher | preencher |
+| 1000000 | 8 | preencher | preencher | preencher |
+| 1000000 | 16 | preencher | preencher | preencher |
+| 5000000 | 1 | preencher | preencher | preencher |
+| 5000000 | 2 | preencher | preencher | preencher |
+| 5000000 | 4 | preencher | preencher | preencher |
+| 5000000 | 8 | preencher | preencher | preencher |
+| 5000000 | 16 | preencher | preencher | preencher |
+| 10000000 | 1 | preencher | preencher | preencher |
+| 10000000 | 2 | preencher | preencher | preencher |
+| 10000000 | 4 | preencher | preencher | preencher |
+| 10000000 | 8 | preencher | preencher | preencher |
+| 10000000 | 16 | preencher | preencher | preencher |
 
-### Computador 2
+### Computador 2 - 8 CPUs
 
 | Tamanho do vetor | Threads | Tempo sequencial (ms) | Tempo paralelo (ms) | Speedup |
 | --- | ---: | ---: | ---: | ---: |
@@ -84,12 +99,27 @@ Onde:
 | 100000 | 4 | preencher | preencher | preencher |
 | 100000 | 8 | preencher | preencher | preencher |
 | 100000 | 16 | preencher | preencher | preencher |
+| 1000000 | 1 | preencher | preencher | preencher |
+| 1000000 | 2 | preencher | preencher | preencher |
+| 1000000 | 4 | preencher | preencher | preencher |
+| 1000000 | 8 | preencher | preencher | preencher |
+| 1000000 | 16 | preencher | preencher | preencher |
+| 5000000 | 1 | preencher | preencher | preencher |
+| 5000000 | 2 | preencher | preencher | preencher |
+| 5000000 | 4 | preencher | preencher | preencher |
+| 5000000 | 8 | preencher | preencher | preencher |
+| 5000000 | 16 | preencher | preencher | preencher |
+| 10000000 | 1 | preencher | preencher | preencher |
+| 10000000 | 2 | preencher | preencher | preencher |
+| 10000000 | 4 | preencher | preencher | preencher |
+| 10000000 | 8 | preencher | preencher | preencher |
+| 10000000 | 16 | preencher | preencher | preencher |
 
 ## Analise esperada
 
 Espera-se que a versao paralela apresente maior vantagem em vetores grandes, pois o custo de criar e coordenar threads passa a ser compensado pelo trabalho dividido. Para vetores pequenos, a versao sequencial pode ser igual ou mais rapida, ja que a sobrecarga das threads pode ser maior que o ganho.
 
-Tambem se espera que computadores com mais nucleos de CPU aproveitem melhor quantidades maiores de threads. Mesmo assim, depois de certo ponto, aumentar threads pode nao melhorar o desempenho por causa de sobrecarga, disputa por CPU, memoria cache e escalonamento do sistema operacional.
+Tambem se espera que o computador com 12 CPUs aproveite melhor quantidades maiores de threads que o computador com 8 CPUs. Mesmo assim, depois de certo ponto, aumentar threads pode nao melhorar o desempenho por causa de sobrecarga, disputa por CPU, memoria cache e escalonamento do sistema operacional.
 
 ## Questao 2 - Clinica Veterinaria em Tempo Real
 
@@ -115,6 +145,12 @@ Recursos usados:
 - prioridade para emergencias;
 - `Thread.sleep` para simular duracao dos servicos;
 - muitos prints com horario e nome da thread.
+
+### Interface grafica
+
+Tambem foi criada uma interface grafica em Swing para facilitar a demonstracao. A tela permite informar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a simulacao, os logs aparecem em tempo real, a fila de atendimentos e atualizada e uma barra de progresso mostra quantos animais ja foram atendidos.
+
+Arquivo: `questao2_clinica_veterinaria/ClinicaVeterinariaInterface.java`
 
 ## Decisoes de implementacao
 

@@ -47,3 +47,15 @@ java -cp questao2_clinica_veterinaria ClinicaVeterinariaThreads 4 20 150
 ```
 
 Na saida, observe o horario, o nome da thread e a prioridade dos atendimentos de emergencia.
+
+## Interface grafica
+
+A classe `ClinicaVeterinariaInterface` implementa uma janela em Java Swing para demonstrar o funcionamento da clinica com threads.
+
+Executar:
+
+```sh
+java -cp questao2_clinica_veterinaria ClinicaVeterinariaInterface
+```
+
+Na interface, o usuario informa a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. A tela mostra logs em tempo real, a fila de atendimentos e uma barra de progresso.

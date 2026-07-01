@@ -28,6 +28,7 @@ SO_Trabalho2/
 ├── questao2_clinica_veterinaria/
 │   ├── ClinicaVeterinariaSequencial.java
 │   ├── ClinicaVeterinariaThreads.java
+│   ├── ClinicaVeterinariaInterface.java
 │   └── README_Questao2.md
 ├── scripts/
 │   ├── compilar.bat
@@ -66,7 +67,7 @@ javac questao1_produto_escalar/*.java questao2_clinica_veterinaria/*.java
 ```sh
 java -cp questao1_produto_escalar ProdutoEscalarSequencial 1000000 5
 java -cp questao1_produto_escalar ProdutoEscalarParalelo 1000000 4 5
-java -cp questao1_produto_escalar ExecutarExperimentos Computador_A
+java -cp questao1_produto_escalar ExecutarExperimentos Computador_12_CPU
 ```
 
 O arquivo `questao1_produto_escalar/resultados.csv` sera gerado com as colunas:
@@ -75,14 +76,26 @@ O arquivo `questao1_produto_escalar/resultados.csv` sera gerado com as colunas:
 computador,modo,tamanho_vetor,threads,tempo_ms,resultado,speedup
 ```
 
+Para atender ao enunciado, execute os experimentos em pelo menos dois computadores com quantidades diferentes de CPU, por exemplo:
+
+```sh
+java -cp questao1_produto_escalar ExecutarExperimentos Computador_12_CPU
+java -cp questao1_produto_escalar ExecutarExperimentos Computador_8_CPU
+```
+
+Depois compare os CSVs e preencha as tabelas do relatorio.
+
 ## Execucao da Questao 2
 
 ```sh
 java -cp questao2_clinica_veterinaria ClinicaVeterinariaSequencial 10 200
 java -cp questao2_clinica_veterinaria ClinicaVeterinariaThreads 4 20 150
+java -cp questao2_clinica_veterinaria ClinicaVeterinariaInterface
 ```
 
 Na versao com threads, os parametros sao: quantidade de funcionarios, quantidade de animais e intervalo de chegada em milissegundos.
+
+A interface grafica usa Java Swing e permite configurar esses parametros em uma janela, acompanhando logs, fila e progresso da simulacao.
 
 ## CSV e graficos
 
