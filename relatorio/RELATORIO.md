@@ -123,7 +123,7 @@ Tambem se espera que o computador com 12 CPUs aproveite melhor quantidades maior
 
 ## Questao 2 - Clinica Veterinaria em Tempo Real
 
-A aplicacao escolhida foi uma Clinica Veterinaria em Tempo Real. A simulacao envolve chegada de animais, recepcao, atendimento veterinario, vacinacao, banho e tosa, exames e emergencias.
+A aplicacao escolhida foi uma Clinica Veterinaria em Tempo Real. A simulacao envolve chegada de animais, recepcao, atendimento veterinario, vacinacao, banho e tosa, exames e emergencias. Para aproximar a simulacao de uma situacao real, cada atendimento possui nome do pet, especie, dados ficticios do tutor, funcionario responsavel, descricao da ocorrencia e valor simulado.
 
 ### Versao sequencial
 
@@ -148,13 +148,13 @@ Recursos usados:
 
 ### Interface grafica
 
-Tambem foi criada uma interface grafica em Swing para facilitar a demonstracao. A tela permite informar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a simulacao, a interface apresenta cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, logs em tempo real e uma barra de progresso com a quantidade de atendimentos concluidos.
+Tambem foi criada uma interface grafica em Swing para facilitar a demonstracao. A tela permite informar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a simulacao, a interface apresenta cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores cobrados, logs em tempo real e uma barra de progresso com a quantidade de atendimentos concluidos.
 
 Arquivo: `questao2_clinica_veterinaria/ClinicaVeterinariaInterface.java`
 
 ## Decisoes de implementacao
 
-A emergencia recebe prioridade na fila para simular uma situacao real de clinica. Os demais atendimentos seguem a ordem de chegada. A duracao de cada servico varia conforme o tipo de atendimento para deixar a execucao mais visual.
+A emergencia recebe prioridade na fila para simular uma situacao real de clinica. Os demais atendimentos seguem a ordem de chegada. A duracao de cada servico varia conforme o tipo de atendimento para deixar a execucao mais visual. Os nomes de pets, tutores, telefones, bairros, ocorrencias e valores sao ficticios e gerados de forma deterministica para facilitar a repeticao dos testes.
 
 Na questao 1, os vetores sao preenchidos de forma deterministica, permitindo comparar resultados entre execucoes. A classe `ExecutarExperimentos` automatiza os tamanhos de vetor e quantidades de threads pedidos.
 

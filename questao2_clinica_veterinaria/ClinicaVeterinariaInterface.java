@@ -62,8 +62,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
     private final JLabel cardEmergencias = new JLabel("0");
     private final JLabel cardTempo = new JLabel("0,00 s");
 
-    private final DefaultTableModel modeloFila = criarModelo(new String[]{"Animal", "Servico", "Prioridade"});
-    private final DefaultTableModel modeloEquipe = criarModelo(new String[]{"Funcionario", "Estado", "Animal", "Servico"});
+    private final DefaultTableModel modeloFila = criarModelo(new String[]{"Pet", "Tutor", "Servico", "Ocorrencia", "Valor", "Prioridade"});
+    private final DefaultTableModel modeloEquipe = criarModelo(new String[]{"Funcionario", "Estado", "Pet", "Tutor", "Servico", "Valor"});
     private final JTable tabelaFila = new JTable(modeloFila);
     private final JTable tabelaEquipe = new JTable(modeloEquipe);
 
@@ -400,7 +400,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
         emergenciasRegistradas = 0;
 
         for (int i = 1; i <= funcionarios; i++) {
-            modeloEquipe.addRow(new Object[]{"Funcionario-" + i, "Aguardando", "-", "-"});
+            modeloEquipe.addRow(new Object[]{"Funcionario-" + i, "Aguardando", "-", "-", "-", "-"});
         }
 
         cardFila.setText("0");
@@ -481,55 +481,64 @@ public class ClinicaVeterinariaInterface extends JFrame {
         });
     }
 
-    private void adicionarNaFila(final Animal animal) {
+    private void adicionarNaFila(final AtendimentoVeterinario atendimento) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                if (animal.emergencia) {
+                if (atendimento.emergencia) {
                     emergenciasRegistradas++;
                     cardEmergencias.setText(String.valueOf(emergenciasRegistradas));
                 }
 
-                if (animaisRetiradosAntesDeExibir.remove(animal.nome)) {
+                if (animaisRetiradosAntesDeExibir.remove(atendimento.nomePet)) {
                     cardFila.setText(String.valueOf(modeloFila.getRowCount()));
                     return;
                 }
 
-                modeloFila.addRow(new Object[]{animal.nome, animal.servico, animal.prioridadeTexto()});
+                modeloFila.addRow(new Object[]{
+                        atendimento.nomePet,
+                        atendimento.tutor,
+                        atendimento.servico,
+                        atendimento.ocorrencia,
+                        atendimento.valorFormatado(),
+                        atendimento.prioridadeTexto()
+                });
                 cardFila.setText(String.valueOf(modeloFila.getRowCount()));
             }
         });
     }
 
-    private void removerDaFila(final Animal animal) {
+    private void removerDaFila(final AtendimentoVeterinario atendimento) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 boolean removido = false;
                 for (int i = 0; i < modeloFila.getRowCount(); i++) {
-                    if (animal.nome.equals(modeloFila.getValueAt(i, 0))) {
+                    if (atendimento.nomePet.equals(modeloFila.getValueAt(i, 0))) {
                         modeloFila.removeRow(i);
                         removido = true;
                         break;
                     }
                 }
                 if (!removido) {
-                    animaisRetiradosAntesDeExibir.add(animal.nome);
+                    animaisRetiradosAntesDeExibir.add(atendimento.nomePet);
                 }
                 cardFila.setText(String.valueOf(modeloFila.getRowCount()));
             }
         });
     }
 
-    private void atualizarFuncionario(final int numero, final String estado, final String animal, final String servico) {
+    private void atualizarFuncionario(final int numero, final String estado, final String pet, final String tutor, final String servico, final String valor) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 int linha = numero - 1;
                 if (linha >= 0 && linha < modeloEquipe.getRowCount()) {
                     modeloEquipe.setValueAt(estado, linha, 1);
-                    modeloEquipe.setValueAt(animal, linha, 2);
-                    modeloEquipe.setValueAt(servico, linha, 3);
+                    modeloEquipe.setValueAt(pet, linha, 2);
+                    modeloEquipe.setValueAt(tutor, linha, 3);
+                    modeloEquipe.setValueAt(servico, linha, 4);
+                    modeloEquipe.setValueAt(valor, linha, 5);
                 }
             }
         });
@@ -582,7 +591,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
 
         @Override
         public void run() {
-            PriorityBlockingQueue<Animal> fila = new PriorityBlockingQueue<Animal>();
+            PriorityBlockingQueue<AtendimentoVeterinario> fila = new PriorityBlockingQueue<AtendimentoVeterinario>();
             AtomicInteger concluidos = new AtomicInteger(0);
             Funcionario[] funcionarios = new Funcionario[quantidadeFuncionarios];
 
@@ -616,12 +625,12 @@ public class ClinicaVeterinariaInterface extends JFrame {
     }
 
     private class Recepcao extends Thread {
-        private final PriorityBlockingQueue<Animal> fila;
+        private final PriorityBlockingQueue<AtendimentoVeterinario> fila;
         private final int quantidadeAnimais;
         private final int intervaloMs;
         private final int quantidadeFuncionarios;
 
-        Recepcao(PriorityBlockingQueue<Animal> fila, int quantidadeAnimais, int intervaloMs, int quantidadeFuncionarios) {
+        Recepcao(PriorityBlockingQueue<AtendimentoVeterinario> fila, int quantidadeAnimais, int intervaloMs, int quantidadeFuncionarios) {
             super("Recepcao");
             this.fila = fila;
             this.quantidadeAnimais = quantidadeAnimais;
@@ -634,14 +643,15 @@ public class ClinicaVeterinariaInterface extends JFrame {
             try {
                 for (int i = 1; i <= quantidadeAnimais; i++) {
                     Thread.sleep(intervaloMs);
-                    Animal animal = new Animal(i, System.nanoTime());
-                    fila.put(animal);
-                    adicionarNaFila(animal);
-                    log("Recepcao cadastrou e colocou na fila: " + animal.descricaoCompleta());
+                    AtendimentoVeterinario atendimento = AtendimentoVeterinario.novo(i);
+                    fila.put(atendimento);
+                    adicionarNaFila(atendimento);
+                    log("Recepcao cadastrou e colocou na fila: " + atendimento.descricaoCompleta());
+                    log("Tutor: " + atendimento.dadosTutor() + " | Ocorrencia: " + atendimento.ocorrencia);
                 }
 
                 for (int i = 0; i < quantidadeFuncionarios; i++) {
-                    fila.put(Animal.fimExpediente());
+                    fila.put(AtendimentoVeterinario.fimExpediente());
                 }
                 log("Recepcao encerrou as chegadas.");
             } catch (InterruptedException erro) {
@@ -653,11 +663,11 @@ public class ClinicaVeterinariaInterface extends JFrame {
 
     private class Funcionario extends Thread {
         private final int numero;
-        private final PriorityBlockingQueue<Animal> fila;
+        private final PriorityBlockingQueue<AtendimentoVeterinario> fila;
         private final AtomicInteger concluidos;
         private final int totalAnimais;
 
-        Funcionario(int numero, PriorityBlockingQueue<Animal> fila, AtomicInteger concluidos, int totalAnimais) {
+        Funcionario(int numero, PriorityBlockingQueue<AtendimentoVeterinario> fila, AtomicInteger concluidos, int totalAnimais) {
             super("Funcionario-" + numero);
             this.numero = numero;
             this.fila = fila;
@@ -668,126 +678,40 @@ public class ClinicaVeterinariaInterface extends JFrame {
         @Override
         public void run() {
             try {
-                atualizarFuncionario(numero, "Aguardando", "-", "-");
+                atualizarFuncionario(numero, "Aguardando", "-", "-", "-", "-");
                 while (true) {
-                    Animal animal = fila.take();
-                    if (animal.fimExpediente) {
-                        atualizarFuncionario(numero, "Encerrado", "-", "-");
+                    AtendimentoVeterinario atendimento = fila.take();
+                    if (atendimento.fimExpediente) {
+                        atualizarFuncionario(numero, "Encerrado", "-", "-", "-", "-");
                         log(getName() + " recebeu fim de expediente.");
                         break;
                     }
 
-                    removerDaFila(animal);
-                    atualizarFuncionario(numero, animal.emergencia ? "Emergencia" : "Atendendo", animal.nome, animal.servico);
-                    log(getName() + " INICIOU " + animal.servico + ": " + animal.descricaoCompleta());
-                    if (animal.emergencia) {
+                    removerDaFila(atendimento);
+                    atualizarFuncionario(
+                            numero,
+                            atendimento.emergencia ? "Emergencia" : "Atendendo",
+                            atendimento.nomePet,
+                            atendimento.tutor,
+                            atendimento.servico,
+                            atendimento.valorFormatado());
+                    log(getName() + " INICIOU " + atendimento.servico + ": " + atendimento.descricaoCompleta());
+                    log("Detalhes: " + atendimento.resumoAtendimento(getName()));
+                    if (atendimento.emergencia) {
                         log(getName() + " priorizou emergencia com atendimento imediato.");
                     }
 
-                    Thread.sleep(animal.duracaoMs);
+                    Thread.sleep(atendimento.duracaoMs);
                     int total = concluidos.incrementAndGet();
                     atualizarProgresso(total, totalAnimais);
-                    atualizarFuncionario(numero, "Aguardando", "-", "-");
-                    log(getName() + " FINALIZOU " + animal.nome + ". Total concluido: " + total);
+                    atualizarFuncionario(numero, "Aguardando", "-", "-", "-", "-");
+                    log(getName() + " FINALIZOU " + atendimento.nomePet + ". Valor: " + atendimento.valorFormatado() + ". Total concluido: " + total);
                 }
             } catch (InterruptedException erro) {
                 Thread.currentThread().interrupt();
-                atualizarFuncionario(numero, "Interrompido", "-", "-");
+                atualizarFuncionario(numero, "Interrompido", "-", "-", "-", "-");
                 log(getName() + " interrompido.");
             }
-        }
-    }
-
-    private static class Animal implements Comparable<Animal> {
-        final int id;
-        final String nome;
-        final String especie;
-        final boolean emergencia;
-        final String servico;
-        final int duracaoMs;
-        final long ordemChegada;
-        final boolean fimExpediente;
-
-        Animal(int id, long ordemChegada) {
-            this.id = id;
-            this.nome = "Animal-" + id;
-            this.especie = escolherEspecie(id);
-            this.emergencia = id % 7 == 0;
-            this.servico = escolherServico(id, emergencia);
-            this.duracaoMs = escolherDuracao(servico, emergencia);
-            this.ordemChegada = ordemChegada;
-            this.fimExpediente = false;
-        }
-
-        private Animal() {
-            this.id = -1;
-            this.nome = "FIM";
-            this.especie = "";
-            this.emergencia = false;
-            this.servico = "";
-            this.duracaoMs = 0;
-            this.ordemChegada = Long.MAX_VALUE;
-            this.fimExpediente = true;
-        }
-
-        static Animal fimExpediente() {
-            return new Animal();
-        }
-
-        @Override
-        public int compareTo(Animal outro) {
-            if (this.fimExpediente && outro.fimExpediente) {
-                return 0;
-            }
-            if (this.fimExpediente) {
-                return 1;
-            }
-            if (outro.fimExpediente) {
-                return -1;
-            }
-            if (this.emergencia != outro.emergencia) {
-                return this.emergencia ? -1 : 1;
-            }
-            return Long.compare(this.ordemChegada, outro.ordemChegada);
-        }
-
-        String prioridadeTexto() {
-            return emergencia ? "EMERGENCIA" : "Normal";
-        }
-
-        String descricaoCompleta() {
-            String prioridade = emergencia ? "PRIORIDADE EMERGENCIA" : "prioridade normal";
-            return nome + " (" + especie + ", " + servico + ", " + prioridade + ")";
-        }
-
-        private static String escolherEspecie(int id) {
-            String[] especies = {"cachorro", "gato", "coelho", "papagaio", "hamster"};
-            return especies[(id - 1) % especies.length];
-        }
-
-        private static String escolherServico(int id, boolean emergencia) {
-            if (emergencia) {
-                return "emergencia";
-            }
-
-            String[] servicos = {"consulta veterinaria", "vacinacao", "banho e tosa", "exames laboratoriais"};
-            return servicos[(id - 1) % servicos.length];
-        }
-
-        private static int escolherDuracao(String servico, boolean emergencia) {
-            if (emergencia) {
-                return 900;
-            }
-            if (servico.equals("consulta veterinaria")) {
-                return 500;
-            }
-            if (servico.equals("vacinacao")) {
-                return 300;
-            }
-            if (servico.equals("banho e tosa")) {
-                return 700;
-            }
-            return 650;
         }
     }
 

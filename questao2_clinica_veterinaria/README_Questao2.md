@@ -4,6 +4,16 @@
 
 A aplicacao representa uma clinica veterinaria com chegada de animais, recepcao, atendimento veterinario, vacinacao, banho e tosa, exames e emergencias.
 
+Cada atendimento usa dados ficticios realistas:
+
+- nome do pet;
+- especie;
+- nome, telefone e bairro do tutor;
+- servico solicitado;
+- ocorrencia do atendimento;
+- funcionario responsavel;
+- valor simulado.
+
 ## Versao sequencial
 
 Na classe `ClinicaVeterinariaSequencial`, todos os passos acontecem um por vez:
@@ -58,4 +68,4 @@ Executar:
 java -cp questao2_clinica_veterinaria ClinicaVeterinariaInterface
 ```
 
-Na interface, o usuario informa a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. A tela mostra cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, logs em tempo real e uma barra de progresso.
+Na interface, o usuario informa a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. A tela mostra cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores simulados, logs em tempo real e uma barra de progresso.

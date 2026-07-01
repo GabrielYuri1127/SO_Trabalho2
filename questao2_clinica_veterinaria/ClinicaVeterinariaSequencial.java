@@ -4,24 +4,6 @@ import java.time.format.DateTimeFormatter;
 public class ClinicaVeterinariaSequencial {
     private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
-    static class Animal {
-        final int id;
-        final String nome;
-        final String especie;
-        final boolean emergencia;
-        final String servico;
-        final int duracaoMs;
-
-        Animal(int id) {
-            this.id = id;
-            this.nome = "Animal-" + id;
-            this.especie = escolherEspecie(id);
-            this.emergencia = id % 7 == 0;
-            this.servico = escolherServico(id, emergencia);
-            this.duracaoMs = escolherDuracao(servico, emergencia);
-        }
-    }
-
     public static void main(String[] args) throws InterruptedException {
         int quantidadeAnimais = args.length >= 1 ? Integer.parseInt(args[0]) : 12;
         int intervaloChegadaMs = args.length >= 2 ? Integer.parseInt(args[1]) : 200;
@@ -31,10 +13,10 @@ public class ClinicaVeterinariaSequencial {
 
         long inicio = System.nanoTime();
         for (int i = 1; i <= quantidadeAnimais; i++) {
-            Animal animal = new Animal(i);
-            simularChegada(animal, intervaloChegadaMs);
-            recepcionar(animal);
-            atender(animal);
+            AtendimentoVeterinario atendimento = AtendimentoVeterinario.novo(i);
+            simularChegada(atendimento, intervaloChegadaMs);
+            recepcionar(atendimento);
+            atender(atendimento);
         }
         long fim = System.nanoTime();
 
@@ -43,62 +25,29 @@ public class ClinicaVeterinariaSequencial {
         log(String.format("Tempo total aproximado: %.2f ms", tempoTotalMs));
     }
 
-    private static void simularChegada(Animal animal, int intervaloChegadaMs) throws InterruptedException {
+    private static void simularChegada(AtendimentoVeterinario atendimento, int intervaloChegadaMs) throws InterruptedException {
         Thread.sleep(intervaloChegadaMs);
-        log("Chegada: " + resumoAnimal(animal));
+        log("Chegada: " + atendimento.descricaoCompleta());
+        log("Dados do tutor: " + atendimento.dadosTutor());
     }
 
-    private static void recepcionar(Animal animal) throws InterruptedException {
-        log("Recepcao iniciou cadastro de " + animal.nome);
+    private static void recepcionar(AtendimentoVeterinario atendimento) throws InterruptedException {
+        log("Recepcao iniciou cadastro de " + atendimento.nomePet + " para o tutor " + atendimento.tutor);
         Thread.sleep(80);
-        log("Recepcao concluiu cadastro de " + animal.nome + ". Encaminhando para " + animal.servico);
+        log("Recepcao concluiu cadastro de " + atendimento.nomePet + ". Encaminhando para " + atendimento.servico + " (" + atendimento.valorFormatado() + ")");
     }
 
-    private static void atender(Animal animal) throws InterruptedException {
-        log("Inicio do atendimento veterinario: " + resumoAnimal(animal));
-        if (animal.emergencia) {
+    private static void atender(AtendimentoVeterinario atendimento) throws InterruptedException {
+        String funcionario = "Veterinario sequencial";
+        log("Inicio do atendimento: " + atendimento.resumoAtendimento(funcionario));
+        if (atendimento.emergencia) {
             log("EMERGENCIA detectada. Atendimento clinico prioritario, exames rapidos e medicacao.");
         } else {
-            log("Procedimento: " + animal.servico + " em andamento.");
+            log("Procedimento: " + atendimento.ocorrencia + " em andamento.");
         }
 
-        Thread.sleep(animal.duracaoMs);
-        log("Fim do atendimento: " + animal.nome + " liberado apos " + animal.servico);
-    }
-
-    private static String escolherEspecie(int id) {
-        String[] especies = {"cachorro", "gato", "coelho", "papagaio", "hamster"};
-        return especies[(id - 1) % especies.length];
-    }
-
-    private static String escolherServico(int id, boolean emergencia) {
-        if (emergencia) {
-            return "emergencia";
-        }
-
-        String[] servicos = {"consulta veterinaria", "vacinacao", "banho e tosa", "exames laboratoriais"};
-        return servicos[(id - 1) % servicos.length];
-    }
-
-    private static int escolherDuracao(String servico, boolean emergencia) {
-        if (emergencia) {
-            return 900;
-        }
-        if (servico.equals("consulta veterinaria")) {
-            return 500;
-        }
-        if (servico.equals("vacinacao")) {
-            return 300;
-        }
-        if (servico.equals("banho e tosa")) {
-            return 700;
-        }
-        return 650;
-    }
-
-    private static String resumoAnimal(Animal animal) {
-        String prioridade = animal.emergencia ? " PRIORIDADE EMERGENCIA" : " prioridade normal";
-        return animal.nome + " (" + animal.especie + ", " + animal.servico + "," + prioridade + ")";
+        Thread.sleep(atendimento.duracaoMs);
+        log("Fim do atendimento: " + atendimento.nomePet + " liberado apos " + atendimento.servico + ". Valor cobrado: " + atendimento.valorFormatado());
     }
 
     private static void log(String mensagem) {
