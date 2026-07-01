@@ -94,7 +94,7 @@ java -cp questao2_clinica_veterinaria ClinicaVeterinariaInterface
 
 Na versao com threads, os parametros sao: quantidade de funcionarios, quantidade de animais e intervalo de chegada em milissegundos.
 
-A interface grafica usa Java Swing e permite configurar esses parametros em uma janela, acompanhando logs, fila e progresso da simulacao.
+A interface grafica usa Java Swing e permite configurar esses parametros em uma janela profissional, com cards de indicadores, fila prioritaria em tabela, painel de funcionarios, logs em tempo real e barra de progresso.
 
 ## CSV e graficos
 

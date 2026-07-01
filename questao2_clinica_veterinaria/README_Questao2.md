@@ -58,4 +58,4 @@ Executar:
 java -cp questao2_clinica_veterinaria ClinicaVeterinariaInterface
 ```
 
-Na interface, o usuario informa a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. A tela mostra logs em tempo real, a fila de atendimentos e uma barra de progresso.
+Na interface, o usuario informa a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. A tela mostra cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, logs em tempo real e uma barra de progresso.
