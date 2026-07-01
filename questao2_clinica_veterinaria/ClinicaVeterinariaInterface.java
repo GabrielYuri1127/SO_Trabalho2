@@ -246,7 +246,6 @@ public class ClinicaVeterinariaInterface extends JFrame {
 
     private JPanel criarPainelLogs() {
         JPanel painel = criarCard("Eventos em tempo real");
-        painel.setLayout(new BorderLayout(0, 12));
 
         areaLogs.setEditable(false);
         areaLogs.setLineWrap(true);
@@ -268,12 +267,10 @@ public class ClinicaVeterinariaInterface extends JFrame {
         painel.setOpaque(false);
 
         JPanel fila = criarCard("Fila prioritaria");
-        fila.setLayout(new BorderLayout(0, 10));
         configurarTabela(tabelaFila);
         fila.add(new JScrollPane(tabelaFila), BorderLayout.CENTER);
 
         JPanel equipe = criarCard("Equipe em atendimento");
-        equipe.setLayout(new BorderLayout(0, 10));
         configurarTabela(tabelaEquipe);
         equipe.add(new JScrollPane(tabelaEquipe), BorderLayout.CENTER);
 
