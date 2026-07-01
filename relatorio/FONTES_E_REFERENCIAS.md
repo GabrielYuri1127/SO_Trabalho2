@@ -8,4 +8,4 @@
   - Classe `AtomicInteger`.
   - Metodo `System.nanoTime()`.
 - Codigo-base de produto escalar sequencial e paralelo enviado por Marcele Azevedo de Paula Oliveira.
-- Uso de IA generativa como apoio para organizacao do projeto, documentacao, scripts auxiliares e revisao estrutural do codigo.
+- Ferramenta de IA generativa usada como apoio de organizacao e revisao, sem substituir a autoria e a validacao da equipe.

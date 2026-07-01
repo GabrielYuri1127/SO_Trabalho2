@@ -19,7 +19,6 @@ SO_Trabalho2/
 ├── README.md
 ├── integrantes.txt
 ├── .gitignore
-├── PROMPT_CODEX.md
 ├── questao1_produto_escalar/
 │   ├── ProdutoEscalarSequencial.java
 │   ├── ProdutoEscalarParalelo.java
