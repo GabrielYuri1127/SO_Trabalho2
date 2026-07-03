@@ -123,7 +123,7 @@ Tambem se espera que o computador com 12 CPUs aproveite melhor quantidades maior
 
 ## Questao 2 - Clinica Veterinaria em Tempo Real
 
-A aplicacao escolhida foi uma Clinica Veterinaria em Tempo Real. A simulacao envolve chegada de animais, recepcao, atendimento veterinario, vacinacao, banho e tosa, exames e emergencias. Para aproximar a simulacao de uma situacao real, cada atendimento possui nome do pet, especie, dados ficticios do tutor, funcionario responsavel, descricao da ocorrencia e valor simulado.
+A aplicacao escolhida foi uma Clinica Veterinaria em Tempo Real. A simulacao envolve chegada de animais, recepcao, atendimento veterinario, vacinacao, banho e tosa, exames e emergencias. Para aproximar a simulacao de uma situacao real, cada atendimento possui nome do pet, especie, raca, sexo, dados ficticios do tutor, funcionario responsavel, descricao da ocorrencia e valor simulado.
 
 ### Versao sequencial
 
@@ -148,13 +148,13 @@ Recursos usados:
 
 ### Interface grafica
 
-Tambem foi criada uma interface grafica em Swing para facilitar a demonstracao da versao com threads. A tela permite informar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a simulacao, a interface apresenta cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores cobrados, historico de atendimentos, receita simulada, logs em tempo real, painel visual com movimento dos pets e uma barra de progresso com a quantidade de atendimentos concluidos. Ao final, e possivel salvar o historico em CSV e gerar um relatorio TXT.
+Tambem foi criada uma interface grafica em Swing para facilitar a demonstracao da versao com threads. A tela permite informar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a simulacao, a interface apresenta cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores cobrados, historico de atendimentos, receita simulada, logs em tempo real, painel visual com movimento dos pets e uma barra de progresso com a quantidade de atendimentos concluidos. A interface tambem possui uma logo propria da clinica, desenhos diferentes conforme especie/raca e cores nos nomes dos pets: rosa para femeas e azul para machos. Ao final, e possivel salvar o historico em CSV e gerar um relatorio TXT.
 
 Arquivo: `questao2_clinica_veterinaria/ClinicaVeterinariaInterface.java`
 
 ## Decisoes de implementacao
 
-A emergencia recebe prioridade na fila para simular uma situacao real de clinica. Os demais atendimentos seguem a ordem de chegada. A duracao de cada servico varia conforme o tipo de atendimento para deixar a execucao mais visual. Os nomes de pets, tutores, telefones, bairros, ocorrencias e valores sao ficticios e gerados de forma deterministica para facilitar a repeticao dos testes.
+A emergencia recebe prioridade na fila para simular uma situacao real de clinica. Os demais atendimentos seguem a ordem de chegada. A duracao de cada servico varia conforme o tipo de atendimento para deixar a execucao mais visual. Os nomes de pets, especies, racas, sexos, tutores, telefones, bairros, ocorrencias e valores sao ficticios e gerados de forma deterministica para facilitar a repeticao dos testes.
 
 Na questao 1, os vetores sao preenchidos de forma deterministica, permitindo comparar resultados entre execucoes. A classe `ExecutarExperimentos` automatiza os tamanhos de vetor e quantidades de threads pedidos.
 

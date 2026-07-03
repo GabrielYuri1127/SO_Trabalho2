@@ -11,6 +11,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,7 +19,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -59,6 +62,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
     private static final Color LINHA = new Color(219, 228, 235);
     private static final Color ALERTA = new Color(196, 57, 57);
     private static final Color SUCESSO = new Color(35, 126, 86);
+    private static final Color FEMEA = new Color(199, 75, 142);
+    private static final Color MACHO = new Color(48, 103, 183);
 
     private final JTextField campoFuncionarios = new JTextField("4", 6);
     private final JTextField campoAnimais = new JTextField("20", 6);
@@ -77,18 +82,20 @@ public class ClinicaVeterinariaInterface extends JFrame {
     private final JLabel cardTempo = new JLabel("0,00 s");
     private final JLabel cardReceita = new JLabel("R$ 0,00");
 
-    private final DefaultTableModel modeloFila = criarModelo(new String[]{"Pet", "Tutor", "Servico", "Ocorrencia", "Valor", "Prioridade"});
-    private final DefaultTableModel modeloEquipe = criarModelo(new String[]{"Funcionario", "Estado", "Pet", "Tutor", "Servico", "Valor"});
-    private final DefaultTableModel modeloHistorico = criarModelo(new String[]{"Horario", "Funcionario", "Pet", "Tutor", "Telefone", "Bairro", "Servico", "Ocorrencia", "Valor"});
+    private final DefaultTableModel modeloFila = criarModelo(new String[]{"Pet", "Raca", "Sexo", "Tutor", "Servico", "Valor", "Prioridade"});
+    private final DefaultTableModel modeloEquipe = criarModelo(new String[]{"Funcionario", "Estado", "Pet", "Raca", "Tutor", "Servico", "Valor"});
+    private final DefaultTableModel modeloHistorico = criarModelo(new String[]{"Horario", "Funcionario", "Pet", "Raca", "Sexo", "Tutor", "Telefone", "Bairro", "Servico", "Ocorrencia", "Valor"});
     private final JTable tabelaFila = new JTable(modeloFila);
     private final JTable tabelaEquipe = new JTable(modeloEquipe);
     private final JTable tabelaHistorico = new JTable(modeloHistorico);
+    private final PainelPetAnimado painelPetAnimado = new PainelPetAnimado();
 
     private Timer timerTempo;
     private long inicioSimulacao;
     private int emergenciasRegistradas;
     private double valorTotalHistorico;
     private final Set<String> animaisRetiradosAntesDeExibir = new HashSet<String>();
+    private final Map<String, Color> coresPorPet = new HashMap<String, Color>();
 
     public ClinicaVeterinariaInterface() {
         super("Clinica Veterinaria em Tempo Real");
@@ -119,6 +126,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
         setMinimumSize(new Dimension(1180, 720));
         setPreferredSize(new Dimension(1240, 760));
         setLocationRelativeTo(null);
+        setIconImage(criarImagemLogo(64));
 
         JPanel raiz = new JPanel(new BorderLayout(18, 18));
         raiz.setBackground(FUNDO);
@@ -132,13 +140,21 @@ public class ClinicaVeterinariaInterface extends JFrame {
         pack();
     }
 
+    private BufferedImage criarImagemLogo(int tamanho) {
+        BufferedImage imagem = new BufferedImage(tamanho, tamanho, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = imagem.createGraphics();
+        new IconeLogoClinica(tamanho).paintIcon(this, g2, 0, 0);
+        g2.dispose();
+        return imagem;
+    }
+
     private JPanel criarCabecalho() {
         JPanel painel = new JPanel(new BorderLayout(16, 0));
         painel.setBackground(PRIMARIA);
         painel.setBorder(new EmptyBorder(18, 22, 18, 22));
 
         JLabel titulo = new JLabel("Clinica Veterinaria em Tempo Real");
-        titulo.setIcon(new IconePata(new Color(239, 255, 249), 32));
+        titulo.setIcon(new IconeLogoClinica(44));
         titulo.setIconTextGap(12);
         titulo.setForeground(Color.WHITE);
         titulo.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
@@ -158,8 +174,6 @@ public class ClinicaVeterinariaInterface extends JFrame {
         rotuloStatus.setHorizontalAlignment(SwingConstants.CENTER);
         rotuloStatus.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
         rotuloStatus.setBorder(new EmptyBorder(8, 14, 8, 14));
-        rotuloStatus.setIcon(new IconePata(PRIMARIA, 18));
-        rotuloStatus.setIconTextGap(8);
 
         painel.add(textos, BorderLayout.WEST);
         painel.add(rotuloStatus, BorderLayout.EAST);
@@ -252,8 +266,6 @@ public class ClinicaVeterinariaInterface extends JFrame {
         painel.setPreferredSize(new Dimension(150, 170));
 
         JLabel rotulo = new JLabel(titulo);
-        rotulo.setIcon(new IconePata(cor, 16));
-        rotulo.setIconTextGap(7);
         rotulo.setForeground(TEXTO_SUAVE);
         rotulo.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 
@@ -273,7 +285,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
     private JPanel criarPainelPet() {
         JPanel painel = criarCard("Movimento pet");
         painel.setPreferredSize(new Dimension(180, 170));
-        painel.add(new PainelPetAnimado(), BorderLayout.CENTER);
+        painel.add(painelPetAnimado, BorderLayout.CENTER);
         return painel;
     }
 
@@ -310,9 +322,9 @@ public class ClinicaVeterinariaInterface extends JFrame {
         configurarTabela(tabelaHistorico);
         historico.add(new JScrollPane(tabelaHistorico), BorderLayout.CENTER);
 
-        abas.addTab("Fila", new IconePata(PRIMARIA, 14), fila);
-        abas.addTab("Equipe", new IconePata(SUCESSO, 14), equipe);
-        abas.addTab("Historico", new IconePata(new Color(132, 92, 22), 14), historico);
+        abas.addTab("Fila", fila);
+        abas.addTab("Equipe", equipe);
+        abas.addTab("Historico", historico);
         return abas;
     }
 
@@ -322,8 +334,6 @@ public class ClinicaVeterinariaInterface extends JFrame {
         painel.setBorder(new EmptyBorder(12, 16, 12, 16));
 
         JLabel label = new JLabel("Progresso geral");
-        label.setIcon(new IconePata(PRIMARIA, 15));
-        label.setIconTextGap(7);
         label.setForeground(TEXTO_SUAVE);
         label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 
@@ -337,10 +347,6 @@ public class ClinicaVeterinariaInterface extends JFrame {
         acoes.setOpaque(false);
         estilizarBotaoSecundario(botaoSalvarHistorico);
         estilizarBotaoSecundario(botaoSalvarRelatorio);
-        botaoSalvarHistorico.setIcon(new IconePata(PRIMARIA_ESCURO, 14));
-        botaoSalvarHistorico.setIconTextGap(8);
-        botaoSalvarRelatorio.setIcon(new IconePata(PRIMARIA_ESCURO, 14));
-        botaoSalvarRelatorio.setIconTextGap(8);
         botaoSalvarHistorico.setEnabled(false);
         botaoSalvarRelatorio.setEnabled(false);
         acoes.add(botaoSalvarHistorico);
@@ -361,8 +367,6 @@ public class ClinicaVeterinariaInterface extends JFrame {
 
         if (titulo != null) {
             JLabel label = new JLabel(titulo);
-            label.setIcon(new IconePata(PRIMARIA, 15));
-            label.setIconTextGap(7);
             label.setForeground(TEXTO);
             label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
             label.setBorder(new EmptyBorder(0, 0, 12, 0));
@@ -385,8 +389,6 @@ public class ClinicaVeterinariaInterface extends JFrame {
         botao.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
         botao.setFocusPainted(false);
         botao.setBorder(new EmptyBorder(10, 14, 10, 14));
-        botao.setIcon(new IconePata(Color.WHITE, 15));
-        botao.setIconTextGap(8);
     }
 
     private void estilizarBotaoSecundario(JButton botao) {
@@ -395,8 +397,6 @@ public class ClinicaVeterinariaInterface extends JFrame {
         botao.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
         botao.setFocusPainted(false);
         botao.setBorder(new EmptyBorder(10, 14, 10, 14));
-        botao.setIcon(new IconePata(PRIMARIA_ESCURO, 15));
-        botao.setIconTextGap(8);
     }
 
     private void configurarTabela(JTable tabela) {
@@ -459,11 +459,13 @@ public class ClinicaVeterinariaInterface extends JFrame {
         modeloEquipe.setRowCount(0);
         modeloHistorico.setRowCount(0);
         animaisRetiradosAntesDeExibir.clear();
+        coresPorPet.clear();
+        painelPetAnimado.limparPet();
         emergenciasRegistradas = 0;
         valorTotalHistorico = 0.0;
 
         for (int i = 1; i <= funcionarios; i++) {
-            modeloEquipe.addRow(new Object[]{"Funcionario-" + i, "Aguardando", "-", "-", "-", "-"});
+            modeloEquipe.addRow(new Object[]{"Funcionario-" + i, "Aguardando", "-", "-", "-", "-", "-"});
         }
 
         cardFila.setText("0");
@@ -495,6 +497,9 @@ public class ClinicaVeterinariaInterface extends JFrame {
         modeloFila.setRowCount(0);
         modeloEquipe.setRowCount(0);
         modeloHistorico.setRowCount(0);
+        animaisRetiradosAntesDeExibir.clear();
+        coresPorPet.clear();
+        painelPetAnimado.limparPet();
         valorTotalHistorico = 0.0;
         cardFila.setText("0");
         cardConcluidos.setText("0");
@@ -556,6 +561,9 @@ public class ClinicaVeterinariaInterface extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                coresPorPet.put(atendimento.nomePet, corDoPet(atendimento));
+                painelPetAnimado.definirPet(atendimento);
+
                 if (atendimento.emergencia) {
                     emergenciasRegistradas++;
                     cardEmergencias.setText(String.valueOf(emergenciasRegistradas));
@@ -568,9 +576,10 @@ public class ClinicaVeterinariaInterface extends JFrame {
 
                 modeloFila.addRow(new Object[]{
                         atendimento.nomePet,
+                        atendimento.raca,
+                        atendimento.sexo,
                         atendimento.tutor,
                         atendimento.servico,
-                        atendimento.ocorrencia,
                         atendimento.valorFormatado(),
                         atendimento.prioridadeTexto()
                 });
@@ -599,7 +608,7 @@ public class ClinicaVeterinariaInterface extends JFrame {
         });
     }
 
-    private void atualizarFuncionario(final int numero, final String estado, final String pet, final String tutor, final String servico, final String valor) {
+    private void atualizarFuncionario(final int numero, final String estado, final String pet, final String raca, final String tutor, final String servico, final String valor) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -607,9 +616,10 @@ public class ClinicaVeterinariaInterface extends JFrame {
                 if (linha >= 0 && linha < modeloEquipe.getRowCount()) {
                     modeloEquipe.setValueAt(estado, linha, 1);
                     modeloEquipe.setValueAt(pet, linha, 2);
-                    modeloEquipe.setValueAt(tutor, linha, 3);
-                    modeloEquipe.setValueAt(servico, linha, 4);
-                    modeloEquipe.setValueAt(valor, linha, 5);
+                    modeloEquipe.setValueAt(raca, linha, 3);
+                    modeloEquipe.setValueAt(tutor, linha, 4);
+                    modeloEquipe.setValueAt(servico, linha, 5);
+                    modeloEquipe.setValueAt(valor, linha, 6);
                 }
             }
         });
@@ -634,6 +644,8 @@ public class ClinicaVeterinariaInterface extends JFrame {
                         LocalTime.now().format(FORMATO_HORA),
                         funcionario,
                         atendimento.nomePet,
+                        atendimento.raca,
+                        atendimento.sexo,
                         atendimento.tutor,
                         atendimento.telefoneTutor,
                         atendimento.bairroTutor,
@@ -771,6 +783,20 @@ public class ClinicaVeterinariaInterface extends JFrame {
         return "\"" + normalizado.replace("\"", "\"\"") + "\"";
     }
 
+    private Color corDoPet(AtendimentoVeterinario atendimento) {
+        return atendimento.femea() ? FEMEA : MACHO;
+    }
+
+    private void mostrarPetAtual(final AtendimentoVeterinario atendimento) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                coresPorPet.put(atendimento.nomePet, corDoPet(atendimento));
+                painelPetAnimado.definirPet(atendimento);
+            }
+        });
+    }
+
     private void atualizarStatus(String texto, Color fundo, Color corTexto) {
         rotuloStatus.setText(texto);
         rotuloStatus.setBackground(fundo);
@@ -877,20 +903,22 @@ public class ClinicaVeterinariaInterface extends JFrame {
         @Override
         public void run() {
             try {
-                atualizarFuncionario(numero, "Aguardando", "-", "-", "-", "-");
+                atualizarFuncionario(numero, "Aguardando", "-", "-", "-", "-", "-");
                 while (true) {
                     AtendimentoVeterinario atendimento = fila.take();
                     if (atendimento.fimExpediente) {
-                        atualizarFuncionario(numero, "Encerrado", "-", "-", "-", "-");
+                        atualizarFuncionario(numero, "Encerrado", "-", "-", "-", "-", "-");
                         log(getName() + " recebeu fim de expediente.");
                         break;
                     }
 
                     removerDaFila(atendimento);
+                    mostrarPetAtual(atendimento);
                     atualizarFuncionario(
                             numero,
                             atendimento.emergencia ? "Emergencia" : "Atendendo",
                             atendimento.nomePet,
+                            atendimento.raca,
                             atendimento.tutor,
                             atendimento.servico,
                             atendimento.valorFormatado());
@@ -904,23 +932,21 @@ public class ClinicaVeterinariaInterface extends JFrame {
                     int total = concluidos.incrementAndGet();
                     registrarHistorico(atendimento, getName());
                     atualizarProgresso(total, totalAnimais);
-                    atualizarFuncionario(numero, "Aguardando", "-", "-", "-", "-");
+                    atualizarFuncionario(numero, "Aguardando", "-", "-", "-", "-", "-");
                     log(getName() + " FINALIZOU " + atendimento.nomePet + ". Valor: " + atendimento.valorFormatado() + ". Total concluido: " + total);
                 }
             } catch (InterruptedException erro) {
                 Thread.currentThread().interrupt();
-                atualizarFuncionario(numero, "Interrompido", "-", "-", "-", "-");
+                atualizarFuncionario(numero, "Interrompido", "-", "-", "-", "-", "-");
                 log(getName() + " interrompido.");
             }
         }
     }
 
-    private static class IconePata implements Icon {
-        private final Color cor;
+    private static class IconeLogoClinica implements Icon {
         private final int tamanho;
 
-        IconePata(Color cor, int tamanho) {
-            this.cor = cor;
+        IconeLogoClinica(int tamanho) {
             this.tamanho = tamanho;
         }
 
@@ -939,25 +965,33 @@ public class ClinicaVeterinariaInterface extends JFrame {
             Graphics2D g2 = (Graphics2D) grafico.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            Color corDesenho = componente != null && !componente.isEnabled()
-                    ? new Color(148, 162, 174)
-                    : cor;
-            g2.setColor(corDesenho);
+            double escala = tamanho / 64.0;
+            g2.setColor(new Color(9, 67, 71));
+            g2.fillRoundRect(x, y, tamanho, tamanho, (int) (14 * escala), (int) (14 * escala));
 
-            double escala = tamanho / 24.0;
-            preencherOval(g2, x, y, escala, 7, 12, 10, 9);
-            preencherOval(g2, x, y, escala, 2, 8, 6, 6);
-            preencherOval(g2, x, y, escala, 7, 3, 6, 6);
-            preencherOval(g2, x, y, escala, 13, 3, 6, 6);
-            preencherOval(g2, x, y, escala, 18, 8, 6, 6);
+            g2.setColor(new Color(236, 255, 249));
+            g2.fillRoundRect(x + (int) (9 * escala), y + (int) (9 * escala), (int) (46 * escala), (int) (46 * escala), (int) (10 * escala), (int) (10 * escala));
 
+            g2.setColor(PRIMARIA);
+            g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, Math.max(12, (int) (22 * escala))));
+            String texto = "CV";
+            int textoX = x + (tamanho - g2.getFontMetrics().stringWidth(texto)) / 2;
+            int textoY = y + (int) (39 * escala);
+            g2.drawString(texto, textoX, textoY);
+
+            g2.setColor(FEMEA);
+            preencherOval(g2, x, y, escala, 41, 13, 8, 8);
+            preencherOval(g2, x, y, escala, 37, 17, 16, 14);
+
+            g2.setColor(MACHO);
+            g2.fillRoundRect(x + (int) (15 * escala), y + (int) (47 * escala), (int) (34 * escala), (int) (5 * escala), (int) (5 * escala), (int) (5 * escala));
             g2.dispose();
         }
 
-        private void preencherOval(Graphics2D g2, int origemX, int origemY, double escala, int x, int y, int largura, int altura) {
+        private void preencherOval(Graphics2D g2, int origemX, int origemY, double escala, int deslocamentoX, int deslocamentoY, int largura, int altura) {
             g2.fillOval(
-                    origemX + (int) Math.round(x * escala),
-                    origemY + (int) Math.round(y * escala),
+                    origemX + (int) Math.round(deslocamentoX * escala),
+                    origemY + (int) Math.round(deslocamentoY * escala),
                     Math.max(3, (int) Math.round(largura * escala)),
                     Math.max(3, (int) Math.round(altura * escala)));
         }
@@ -983,12 +1017,30 @@ public class ClinicaVeterinariaInterface extends JFrame {
                 componente.setForeground(SUCESSO);
             }
 
+            String coluna = table.getColumnName(column);
+            if ("Pet".equals(coluna)) {
+                Color corPet = coresPorPet.get(texto);
+                if (corPet != null) {
+                    componente.setForeground(corPet);
+                    componente.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+                }
+            } else if ("Sexo".equals(coluna)) {
+                if ("Femea".equals(texto)) {
+                    componente.setForeground(FEMEA);
+                    componente.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+                } else if ("Macho".equals(texto)) {
+                    componente.setForeground(MACHO);
+                    componente.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+                }
+            }
+
             return componente;
         }
     }
 
     private class PainelPetAnimado extends JPanel {
         private int passo;
+        private AtendimentoVeterinario atendimentoAtual;
 
         PainelPetAnimado() {
             setOpaque(false);
@@ -997,6 +1049,16 @@ public class ClinicaVeterinariaInterface extends JFrame {
                 repaint();
             });
             timer.start();
+        }
+
+        void definirPet(AtendimentoVeterinario atendimento) {
+            this.atendimentoAtual = atendimento;
+            repaint();
+        }
+
+        void limparPet() {
+            this.atendimentoAtual = null;
+            repaint();
         }
 
         @Override
@@ -1010,32 +1072,133 @@ public class ClinicaVeterinariaInterface extends JFrame {
             g2.setColor(new Color(241, 248, 247));
             g2.fillRoundRect(8, 8, largura - 16, altura - 16, 18, 18);
 
-            int x = 22 + (passo % 18);
-            int y = altura / 2 + 8;
-            desenharPet(g2, x, y);
-            desenharPata(g2, largura - 58, 38, 0.85);
-            desenharPata(g2, largura - 94, 76, 0.65);
-            desenharPata(g2, largura - 45, 108, 0.55);
+            if (atendimentoAtual == null) {
+                g2.setColor(TEXTO_SUAVE);
+                g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+                g2.drawString("Aguardando pet", 22, 28);
+                g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+                g2.drawString("dados aparecem ao vivo", 22, 44);
+                new IconeLogoClinica(48).paintIcon(this, g2, largura / 2 - 24, altura / 2 - 12);
+                g2.dispose();
+                return;
+            }
+
+            int x = 20 + (passo % 18);
+            int y = altura - 38;
+            Color corNome = corDoPet(atendimentoAtual);
+
+            g2.setColor(corNome);
+            g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 13));
+            g2.drawString(atendimentoAtual.nomePet, 22, 28);
 
             g2.setColor(TEXTO_SUAVE);
-            g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-            g2.drawString("Pets chegando", 22, 28);
-            g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
-            g2.drawString("fila e equipe em tempo real", 22, 44);
+            g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
+            g2.drawString(atendimentoAtual.raca, 22, 43);
+            g2.drawString(atendimentoAtual.sexo + " | " + atendimentoAtual.especie, 22, 56);
+
+            desenharPetPorTipo(g2, atendimentoAtual, x, y);
+            desenharPata(g2, largura - 48, 58, 0.48);
+            desenharPata(g2, largura - 72, 94, 0.38);
+
+            if (atendimentoAtual.emergencia) {
+                g2.setColor(ALERTA);
+                g2.fillOval(largura - 44, 18, 24, 24);
+                g2.setColor(Color.WHITE);
+                g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+                g2.drawString("+", largura - 37, 36);
+            }
             g2.dispose();
         }
 
-        private void desenharPet(Graphics2D g2, int x, int y) {
-            g2.setColor(new Color(98, 134, 108));
-            g2.fillOval(x + 18, y - 28, 62, 34);
-            g2.fillOval(x + 66, y - 42, 28, 28);
-            g2.fillOval(x + 70, y - 55, 10, 18);
-            g2.fillOval(x + 84, y - 55, 10, 18);
-            g2.fillRect(x + 28, y, 10, 18);
-            g2.fillRect(x + 62, y, 10, 18);
-            g2.setColor(new Color(65, 91, 73));
-            g2.fillOval(x + 86, y - 32, 4, 4);
-            g2.drawArc(x + 4, y - 26, 24, 18, 20, 130);
+        private void desenharPetPorTipo(Graphics2D g2, AtendimentoVeterinario atendimento, int x, int y) {
+            Color base = corPorRaca(atendimento);
+            if ("gato".equals(atendimento.especie)) {
+                desenharGato(g2, x, y, base);
+            } else if ("coelho".equals(atendimento.especie)) {
+                desenharCoelho(g2, x, y, base);
+            } else if ("papagaio".equals(atendimento.especie)) {
+                desenharPassaro(g2, x, y, base);
+            } else if ("hamster".equals(atendimento.especie)) {
+                desenharHamster(g2, x, y, base);
+            } else {
+                desenharCachorro(g2, x, y, base);
+            }
+        }
+
+        private Color corPorRaca(AtendimentoVeterinario atendimento) {
+            Color[] cores = {
+                    new Color(126, 98, 67),
+                    new Color(93, 118, 143),
+                    new Color(194, 150, 91),
+                    new Color(96, 139, 104),
+                    new Color(132, 109, 158)
+            };
+            int indice = (atendimento.raca.hashCode() & 0x7fffffff) % cores.length;
+            return cores[indice];
+        }
+
+        private void desenharCachorro(Graphics2D g2, int x, int y, Color base) {
+            g2.setColor(base);
+            g2.fillOval(x + 16, y - 34, 70, 36);
+            g2.fillOval(x + 68, y - 50, 30, 30);
+            g2.fillOval(x + 72, y - 45, 12, 22);
+            g2.fillRect(x + 30, y - 4, 9, 18);
+            g2.fillRect(x + 65, y - 4, 9, 18);
+            g2.setColor(base.darker());
+            g2.drawArc(x + 2, y - 34, 28, 22, 10, 135);
+            g2.fillOval(x + 88, y - 38, 4, 4);
+        }
+
+        private void desenharGato(Graphics2D g2, int x, int y, Color base) {
+            g2.setColor(base);
+            g2.fillOval(x + 18, y - 32, 58, 32);
+            g2.fillOval(x + 62, y - 48, 30, 30);
+            g2.fillPolygon(new int[]{x + 66, x + 72, x + 78}, new int[]{y - 43, y - 60, y - 43}, 3);
+            g2.fillPolygon(new int[]{x + 80, x + 87, x + 92}, new int[]{y - 43, y - 60, y - 43}, 3);
+            g2.fillRect(x + 30, y - 4, 8, 18);
+            g2.fillRect(x + 58, y - 4, 8, 18);
+            g2.setColor(base.darker());
+            g2.drawArc(x + 3, y - 44, 28, 44, 220, 160);
+            g2.fillOval(x + 84, y - 38, 4, 4);
+        }
+
+        private void desenharCoelho(Graphics2D g2, int x, int y, Color base) {
+            g2.setColor(base);
+            g2.fillOval(x + 20, y - 34, 58, 34);
+            g2.fillOval(x + 62, y - 50, 28, 28);
+            g2.fillOval(x + 67, y - 78, 9, 34);
+            g2.fillOval(x + 80, y - 78, 9, 34);
+            g2.fillRect(x + 32, y - 4, 8, 16);
+            g2.fillRect(x + 58, y - 4, 8, 16);
+            g2.setColor(base.brighter());
+            g2.fillOval(x + 15, y - 24, 12, 12);
+            g2.setColor(base.darker());
+            g2.fillOval(x + 82, y - 40, 4, 4);
+        }
+
+        private void desenharPassaro(Graphics2D g2, int x, int y, Color base) {
+            g2.setColor(base);
+            g2.fillOval(x + 30, y - 56, 42, 56);
+            g2.setColor(base.darker());
+            g2.fillOval(x + 40, y - 42, 22, 30);
+            g2.setColor(new Color(232, 165, 48));
+            g2.fillPolygon(new int[]{x + 68, x + 88, x + 68}, new int[]{y - 42, y - 35, y - 30}, 3);
+            g2.setColor(base.darker());
+            g2.fillOval(x + 58, y - 47, 4, 4);
+            g2.drawLine(x + 45, y, x + 40, y + 12);
+            g2.drawLine(x + 58, y, x + 63, y + 12);
+        }
+
+        private void desenharHamster(Graphics2D g2, int x, int y, Color base) {
+            g2.setColor(base);
+            g2.fillOval(x + 24, y - 46, 58, 48);
+            g2.fillOval(x + 29, y - 56, 14, 14);
+            g2.fillOval(x + 63, y - 56, 14, 14);
+            g2.setColor(base.brighter());
+            g2.fillOval(x + 36, y - 28, 34, 22);
+            g2.setColor(base.darker());
+            g2.fillOval(x + 60, y - 38, 4, 4);
+            g2.fillOval(x + 73, y - 26, 5, 5);
         }
 
         private void desenharPata(Graphics2D g2, int x, int y, double escala) {

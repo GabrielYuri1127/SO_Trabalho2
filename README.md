@@ -16,31 +16,39 @@ O objetivo do trabalho e praticar programacao paralela com threads, comparar des
 
 ```text
 SO_Trabalho2/
-├── README.md
-├── integrantes.txt
-├── .gitignore
-├── questao1_produto_escalar/
-│   ├── ProdutoEscalarSequencial.java
-│   ├── ProdutoEscalarParalelo.java
-│   ├── ExecutarExperimentos.java
-│   └── resultados_modelo.csv
-├── questao2_clinica_veterinaria/
-│   ├── ClinicaVeterinariaSequencial.java
-│   ├── ClinicaVeterinariaThreads.java
-│   ├── ClinicaVeterinariaInterface.java
-│   └── README_Questao2.md
-├── scripts/
-│   ├── compilar.bat
-│   ├── executar_testes.bat
-│   ├── compilar.sh
-│   ├── executar_testes.sh
-│   └── gerar_grafico.py
-└── relatorio/
-    ├── RELATORIO.md
-    └── FONTES_E_REFERENCIAS.md
+|-- README.md
+|-- GUIA_TESTES_OUTRA_MAQUINA.md
+|-- integrantes.txt
+|-- .gitignore
+|-- requirements.txt
+|-- questao1_produto_escalar/
+|   |-- ProdutoEscalarSequencial.java
+|   |-- ProdutoEscalarParalelo.java
+|   |-- ExecutarExperimentos.java
+|   |-- resultados_modelo.csv
+|   |-- resultados_8_cpu.csv
+|   |-- grafico_tempos_8_cpu.png
+|   `-- grafico_speedup_8_cpu.png
+|-- questao2_clinica_veterinaria/
+|   |-- AtendimentoVeterinario.java
+|   |-- ClinicaVeterinariaSequencial.java
+|   |-- ClinicaVeterinariaThreads.java
+|   |-- ClinicaVeterinariaInterface.java
+|   `-- README_Questao2.md
+|-- scripts/
+|   |-- compilar.bat
+|   |-- executar_testes.bat
+|   |-- compilar.sh
+|   |-- executar_testes.sh
+|   `-- gerar_grafico.py
+`-- relatorio/
+    |-- RELATORIO.md
+    `-- FONTES_E_REFERENCIAS.md
 ```
 
 ## Compilacao
+
+Para testar em outro computador, use o passo a passo completo em `GUIA_TESTES_OUTRA_MAQUINA.md`.
 
 No Windows:
 
@@ -96,7 +104,7 @@ Na versao com threads, os parametros sao: quantidade de funcionarios, quantidade
 
 Na versao sequencial da Questao 2, a clinica e simulada como um unico fluxo de execucao: equivale a um unico funcionario atendendo um pet por vez. Na versao com threads e na interface grafica, a recepcao e varios funcionarios trabalham simultaneamente.
 
-A interface grafica usa Java Swing e permite configurar esses parametros em uma janela profissional, com cards de indicadores, fila prioritaria em tabela, painel de funcionarios, historico de atendimentos, receita simulada, logs em tempo real, barra de progresso e painel visual com movimento dos pets. A simulacao usa dados ficticios realistas, incluindo nome do pet, tutor, telefone, bairro, funcionario responsavel, ocorrencia do atendimento e valor cobrado. Ao final, a interface pode salvar o historico em CSV e um relatorio TXT.
+A interface grafica usa Java Swing e permite configurar esses parametros em uma janela profissional, com cards de indicadores, fila prioritaria em tabela, painel de funcionarios, historico de atendimentos, receita simulada, logs em tempo real, barra de progresso e painel visual com movimento dos pets. A simulacao usa dados ficticios realistas, incluindo nome do pet, especie, raca, sexo, tutor, telefone, bairro, funcionario responsavel, ocorrencia do atendimento e valor cobrado. A tela tambem possui logo propria da clinica e diferencia visualmente os pets: femeas aparecem em rosa e machos em azul. Ao final, a interface pode salvar o historico em CSV e um relatorio TXT.
 
 ## CSV e graficos
 

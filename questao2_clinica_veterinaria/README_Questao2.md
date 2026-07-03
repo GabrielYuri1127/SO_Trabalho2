@@ -8,6 +8,8 @@ Cada atendimento usa dados ficticios realistas:
 
 - nome do pet;
 - especie;
+- raca;
+- sexo;
 - nome, telefone e bairro do tutor;
 - servico solicitado;
 - ocorrencia do atendimento;
@@ -73,6 +75,8 @@ java -cp questao2_clinica_veterinaria ClinicaVeterinariaInterface
 ```
 
 Na interface, o usuario informa a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. A tela mostra cards de indicadores, fila prioritaria em tabela, estado de cada funcionario, dados do tutor, valores simulados, historico de atendimentos, logs em tempo real, painel visual com movimento dos pets e uma barra de progresso.
+
+O painel visual usa uma logo propria da clinica e diferencia os pets por especie/raca. O nome do pet aparece em rosa quando o atendimento e de uma femea e em azul quando e de um macho.
 
 Ao final da simulacao, a interface habilita:
 

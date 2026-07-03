@@ -2,6 +2,8 @@ public class AtendimentoVeterinario implements Comparable<AtendimentoVeterinario
     final int id;
     final String nomePet;
     final String especie;
+    final String raca;
+    final String sexo;
     final String tutor;
     final String telefoneTutor;
     final String bairroTutor;
@@ -17,6 +19,8 @@ public class AtendimentoVeterinario implements Comparable<AtendimentoVeterinario
         this.id = id;
         this.nomePet = escolher(NOMES_PETS, id);
         this.especie = escolher(ESPECIES, id);
+        this.raca = escolher(RACAS, id);
+        this.sexo = escolher(SEXOS, id);
         this.tutor = escolher(TUTORES, id);
         this.telefoneTutor = escolher(TELEFONES, id);
         this.bairroTutor = escolher(BAIRROS, id);
@@ -33,6 +37,8 @@ public class AtendimentoVeterinario implements Comparable<AtendimentoVeterinario
         this.id = -1;
         this.nomePet = "FIM";
         this.especie = "";
+        this.raca = "";
+        this.sexo = "";
         this.tutor = "";
         this.telefoneTutor = "";
         this.bairroTutor = "";
@@ -74,6 +80,14 @@ public class AtendimentoVeterinario implements Comparable<AtendimentoVeterinario
         return emergencia ? "EMERGENCIA" : "Normal";
     }
 
+    boolean femea() {
+        return "Femea".equals(sexo);
+    }
+
+    String perfilPet() {
+        return especie + " | " + raca + " | " + sexo;
+    }
+
     String valorFormatado() {
         return String.format("R$ %.2f", valor);
     }
@@ -84,12 +98,13 @@ public class AtendimentoVeterinario implements Comparable<AtendimentoVeterinario
 
     String descricaoCompleta() {
         String prioridade = emergencia ? "PRIORIDADE EMERGENCIA" : "prioridade normal";
-        return nomePet + " (" + especie + ", tutor: " + tutor + ", " + servico + ", " + prioridade + ", " + valorFormatado() + ")";
+        return nomePet + " (" + perfilPet() + ", tutor: " + tutor + ", " + servico + ", " + prioridade + ", " + valorFormatado() + ")";
     }
 
     String resumoAtendimento(String funcionario) {
         return "Funcionario: " + funcionario
                 + " | Pet: " + nomePet
+                + " | Perfil: " + perfilPet()
                 + " | Tutor: " + dadosTutor()
                 + " | Atendimento: " + ocorrencia
                 + " | Valor: " + valorFormatado();
@@ -189,7 +204,24 @@ public class AtendimentoVeterinario implements Comparable<AtendimentoVeterinario
     };
 
     private static final String[] ESPECIES = {
-            "cachorro", "gato", "coelho", "papagaio", "hamster"
+            "cachorro", "gato", "coelho", "papagaio", "hamster",
+            "cachorro", "gato", "cachorro", "coelho", "gato",
+            "cachorro", "gato", "cachorro", "gato", "cachorro",
+            "gato", "papagaio", "coelho", "cachorro", "gato"
+    };
+
+    private static final String[] RACAS = {
+            "Labrador", "Siamese", "Mini Lion", "Papagaio-verdadeiro", "Sirio",
+            "Beagle", "Persa", "Vira-lata", "Angora", "Maine Coon",
+            "Poodle", "SRD", "Golden Retriever", "Ragdoll", "Shih-tzu",
+            "British Shorthair", "Calopsita", "Holandes", "Pastor Alemao", "Sphynx"
+    };
+
+    private static final String[] SEXOS = {
+            "Macho", "Femea", "Femea", "Macho", "Femea",
+            "Macho", "Femea", "Macho", "Femea", "Femea",
+            "Macho", "Femea", "Macho", "Femea", "Macho",
+            "Femea", "Macho", "Femea", "Macho", "Femea"
     };
 
     private static final String[] TUTORES = {
