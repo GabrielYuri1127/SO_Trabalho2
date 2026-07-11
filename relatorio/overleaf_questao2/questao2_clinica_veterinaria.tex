@@ -6,38 +6,38 @@
 % \usepackage{xcolor}
 % \usepackage{listings}
 %
-% Sugestao de configuracao para os codigos:
-% \lstset{
-%   language=Java,
-%   basicstyle=\ttfamily\footnotesize,
-%   keywordstyle=\color{blue},
-%   commentstyle=\color{gray},
-%   stringstyle=\color{teal},
-%   breaklines=true,
-%   frame=single,
-%   showstringspaces=false,
-%   columns=fullflexible
-% }
+\definecolor{q2codegreen}{RGB}{0,115,0}
+\definecolor{q2codegray}{RGB}{90,90,90}
+\definecolor{q2codepurple}{RGB}{150,0,150}
 
-\lstset{
+\lstdefinestyle{JavaStyle}{
   language=Java,
-  basicstyle=\ttfamily\footnotesize,
-  keywordstyle=\color{blue},
-  commentstyle=\color{gray},
-  stringstyle=\color{teal},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{q2codegreen},
+  stringstyle=\color{q2codepurple},
+  numbers=left,
+  numberstyle=\tiny\color{q2codegray},
+  numbersep=8pt,
   breaklines=true,
   frame=single,
+  tabsize=4,
   showstringspaces=false,
-  columns=fullflexible
+  captionpos=b
 }
 
-\subsection{Questao 2 - Clinica Veterinaria em Tempo Real}
+\renewcommand{\lstlistingname}{Codigo}
+\lstset{style=JavaStyle}
 
-Na segunda questao foi desenvolvida uma simulacao de uma clinica veterinaria em funcionamento. A ideia foi representar um ambiente em que varias atividades podem acontecer ao mesmo tempo: chegada de animais, cadastro na recepcao, atendimento veterinario, vacinacao, banho e tosa, exames laboratoriais e casos de emergencia.
+\section{Questao 2: Simulacao de Clinica Veterinaria em Tempo Real}
 
-Para deixar a simulacao mais proxima de um sistema real, cada atendimento possui dados do pet e do tutor. Foram incluidos nome do animal, especie, raca, sexo, nome do tutor, telefone, bairro, servico solicitado, ocorrencia do atendimento, funcionario responsavel e valor simulado do servico. Esses dados tambem aparecem na interface grafica e no historico final.
+A segunda parte do trabalho consiste em uma aplicacao que demonstra o uso de threads em uma situacao mais proxima de um sistema real. O tema escolhido foi uma clinica veterinaria em tempo real, pois esse ambiente permite representar atividades simultaneas, como chegada de animais, cadastro na recepcao, atendimento por funcionarios, exames, vacinacao, banho e tosa e casos emergenciais.
 
-\subsubsection{Versao sequencial}
+A aplicacao foi implementada em duas versoes: uma sequencial, sem uso de threads, e outra concorrente, com recepcao e funcionarios executando em threads separadas. A comparacao entre as duas versoes permite observar a diferenca entre um fluxo unico de atendimento e uma simulacao em que varias tarefas podem ocorrer ao mesmo tempo.
+
+Para tornar a simulacao mais completa, cada atendimento possui informacoes do pet e do tutor. Foram incluidos nome do animal, especie, raca, sexo, nome do tutor, telefone, bairro, servico solicitado, ocorrencia do atendimento, funcionario responsavel e valor simulado do servico. Esses dados aparecem nos logs, nas tabelas da interface e no historico final.
+
+\subsection{Versao sequencial}
 
 A versao sequencial representa a clinica sem uso de threads. Nesse caso, existe apenas um fluxo de execucao: um animal chega, passa pela recepcao, recebe atendimento e somente depois o proximo animal inicia o processo. Na pratica, essa versao funciona como se houvesse um unico funcionario responsavel por todos os atendimentos.
 
@@ -58,7 +58,7 @@ double tempoTotalMs = (fim - inicio) / 1_000_000.0;
 
 Mesmo quando aparece uma emergencia, ela so e tratada quando chega sua vez no fluxo. Isso mostra a limitacao da programacao sequencial tradicional para esse tipo de problema: nao ha paralelismo entre recepcao e atendimento.
 
-\subsubsection{Versao com threads}
+\subsection{Versao com threads}
 
 Na versao com threads, a clinica passa a ter uma thread para a recepcao e varias threads para os funcionarios. A recepcao cadastra os animais e coloca cada atendimento em uma fila compartilhada. Os funcionarios retiram atendimentos dessa fila e executam os servicos em paralelo.
 
@@ -128,7 +128,7 @@ while (true) {
 }
 \end{lstlisting}
 
-\subsubsection{Interface grafica}
+\subsection{Interface grafica}
 
 Tambem foi criada uma interface grafica em Java Swing para acompanhar a simulacao de forma visual. A tela permite configurar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a execucao, a interface mostra a fila, os funcionarios em atendimento, o historico, os logs, a receita simulada, o tempo total e o progresso geral.
 
@@ -176,7 +176,7 @@ Na interface, os dados dos atendimentos aparecem em tabelas. O nome do pet receb
     \label{fig:q2-interface-final-equipe}
 \end{figure}
 
-\subsubsection{Analise dos resultados}
+\subsection{Analise dos resultados}
 
 Para comparar as duas versoes, foi executado um teste com a mesma carga: 12 animais e intervalo de chegada de 40 ms. Na versao com threads foram usados 4 funcionarios. Os tempos obtidos estao na Tabela~\ref{tab:q2-comparacao}.
 
@@ -208,7 +208,7 @@ Outro ponto observado foi o tratamento das emergencias. Na versao com threads, q
 
 Os tempos medidos nao representam a duracao real de uma consulta veterinaria, pois os procedimentos foram simulados com \texttt{Thread.sleep}. Ainda assim, eles servem para demonstrar o comportamento concorrente do sistema e a diferenca entre uma execucao sequencial e uma execucao com varias threads.
 
-\subsubsection{Conclusao da Questao 2}
+\subsection{Conclusao da Questao 2}
 
 A versao sequencial cumpriu o papel de mostrar o funcionamento basico da clinica em um unico fluxo. Ja a versao com threads representou melhor a ideia de uma clinica em tempo real, com recepcao e funcionarios atuando simultaneamente. A fila prioritaria, o contador atomico e os logs com nome das threads ajudaram a deixar visivel o funcionamento da concorrencia.
 
