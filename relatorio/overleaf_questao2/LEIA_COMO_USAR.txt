@@ -1,0 +1,57 @@
+Pasta pronta para inserir somente a Questao 2 no Overleaf.
+
+Arquivos principais:
+
+1. questao2_clinica_veterinaria.tex
+   Texto completo da Questao 2, com explicacao, trechos de codigo, imagens, tabela e analise de resultados.
+
+2. PACOTES_PREAMBULO.tex
+   Pacotes que precisam existir no preambulo do arquivo principal do Overleaf.
+
+3. imagens/
+   Prints usados no relatorio. Os nomes ja estao iguais aos caminhos usados no arquivo .tex.
+
+4. codigos_java/
+   Codigos fonte completos da Questao 2. O texto principal ja tem os trechos de codigo mais importantes, mas estes arquivos ficam juntos para consulta.
+
+5. evidencias/
+   Logs dos testes executados e resumo dos resultados usados na analise.
+
+Como usar no Overleaf:
+
+1. Envie a pasta overleaf_questao2 para o projeto do Overleaf.
+   Importante: mantenha o nome da pasta como overleaf_questao2.
+2. No arquivo principal do relatorio, confira se os pacotes de PACOTES_PREAMBULO.tex estao no preambulo.
+3. No ponto do relatorio onde entra a Questao 2, use uma destas opcoes:
+
+   Opcao A - mais organizada:
+   \input{overleaf_questao2/questao2_clinica_veterinaria}
+
+   Opcao B - colar manualmente:
+   abra questao2_clinica_veterinaria.tex, copie o conteudo e cole no relatorio.
+
+4. Compile o PDF.
+
+Arquivos de imagem referenciados no texto:
+
+overleaf_questao2/imagens/q2_interface_inicial.png
+overleaf_questao2/imagens/q2_interface_execucao.png
+overleaf_questao2/imagens/q2_interface_final_historico.png
+
+Conteudo coberto:
+
+- versao sequencial;
+- versao com threads;
+- trechos de codigo no proprio texto;
+- codigos Java completos em pasta separada;
+- uso de PriorityBlockingQueue;
+- uso de AtomicInteger;
+- prioridade para emergencias;
+- interface grafica;
+- prints da interface;
+- tabela comparativa;
+- analise dos resultados.
+
+Observacao:
+
+O texto nao depende da parte da Questao 1. Esta pasta foi separada apenas com o material da Questao 2.
