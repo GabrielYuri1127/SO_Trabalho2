@@ -284,6 +284,30 @@ Ao final da simulacao, a interface permite salvar:
 - historico em CSV;
 - relatorio TXT dos atendimentos.
 
+### 5.5 Evidencias geradas para o relatorio
+
+Foram geradas evidencias de execucao em console e prints da interface grafica. Os arquivos de log estao em:
+
+```text
+relatorio/evidencias/teste_q2_sequencial.txt
+relatorio/evidencias/teste_q2_threads.txt
+```
+
+As imagens geradas para inserir no relatorio estao em:
+
+```text
+relatorio/imagens/q2_interface_inicial.png
+relatorio/imagens/q2_interface_execucao.png
+relatorio/imagens/q2_interface_final_historico.png
+```
+
+As legendas sugeridas e o codigo LaTeX para inserir essas figuras no Overleaf estao nos arquivos:
+
+```text
+relatorio/LEGENDAS_IMAGENS_Q2.md
+relatorio/OVERLEAF_FIGURAS_Q2.tex
+```
+
 ## 6. Decisoes de implementacao
 
 Na Questao 1, os vetores foram preenchidos de forma deterministica para permitir comparacao entre execucoes. Foi usado aquecimento da JVM e repeticao das medicoes para reduzir variacoes. O speedup foi calculado dividindo o tempo sequencial pelo tempo paralelo.
