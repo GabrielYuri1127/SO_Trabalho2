@@ -11,7 +11,7 @@ relatorio/imagens/q2_interface_inicial.png
 Legenda:
 
 ```text
-Interface inicial da Clinica Veterinaria em Tempo Real antes do inicio da simulacao. A tela permite configurar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada.
+Tela inicial da clinica veterinaria, com os campos para configurar funcionarios, quantidade de animais e intervalo de chegada.
 ```
 
 ## Imagem 2
@@ -19,16 +19,44 @@ Interface inicial da Clinica Veterinaria em Tempo Real antes do inicio da simula
 Arquivo:
 
 ```text
-relatorio/imagens/q2_interface_execucao.png
+relatorio/imagens/q2_interface_execucao_fila.png
 ```
 
 Legenda:
 
 ```text
-Interface durante a execucao da simulacao com threads. A tela mostra funcionarios atendendo simultaneamente, contadores de atendimentos concluidos, emergencia registrada, receita parcial, logs em tempo real e o painel visual do pet em atendimento.
+Simulacao em execucao na aba da fila prioritaria, mostrando atendimentos aguardando, logs em tempo real e emergencia sendo priorizada por uma thread de funcionario.
 ```
 
 ## Imagem 3
+
+Arquivo:
+
+```text
+relatorio/imagens/q2_interface_execucao_equipe.png
+```
+
+Legenda:
+
+```text
+Aba da equipe durante a execucao, com funcionarios em threads separadas realizando atendimentos simultaneos e casos emergenciais.
+```
+
+## Imagem 4
+
+Arquivo:
+
+```text
+relatorio/imagens/q2_interface_historico_parcial.png
+```
+
+Legenda:
+
+```text
+Historico parcial durante a simulacao, registrando atendimentos finalizados enquanto outros continuam em execucao.
+```
+
+## Imagem 5
 
 Arquivo:
 
@@ -39,7 +67,21 @@ relatorio/imagens/q2_interface_final_historico.png
 Legenda:
 
 ```text
-Interface apos a conclusao da simulacao, com 20 atendimentos finalizados. A aba de historico apresenta dados dos pets, tutores, servicos realizados, ocorrencias e valores simulados.
+Tela final com o historico dos atendimentos, incluindo pet, tutor, funcionario, servico, ocorrencia e valor simulado.
+```
+
+## Imagem 6
+
+Arquivo:
+
+```text
+relatorio/imagens/q2_interface_final_equipe.png
+```
+
+Legenda:
+
+```text
+Tela final na aba da equipe, mostrando todos os funcionarios encerrados, progresso completo e botoes habilitados para salvar historico ou relatorio.
 ```
 
 ## Observacao para o texto

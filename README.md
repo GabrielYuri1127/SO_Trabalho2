@@ -50,8 +50,11 @@ SO_Trabalho2/
     |-- OVERLEAF_TEXTO_Q2.tex
     |-- imagens/
     |   |-- q2_interface_inicial.png
-    |   |-- q2_interface_execucao.png
-    |   `-- q2_interface_final_historico.png
+    |   |-- q2_interface_execucao_fila.png
+    |   |-- q2_interface_execucao_equipe.png
+    |   |-- q2_interface_historico_parcial.png
+    |   |-- q2_interface_final_historico.png
+    |   `-- q2_interface_final_equipe.png
     |-- evidencias/
     |   |-- teste_q2_sequencial.txt
     |   |-- teste_q2_threads.txt

@@ -35,8 +35,11 @@ Como usar no Overleaf:
 Arquivos de imagem referenciados no texto:
 
 overleaf_questao2/imagens/q2_interface_inicial.png
-overleaf_questao2/imagens/q2_interface_execucao.png
+overleaf_questao2/imagens/q2_interface_execucao_fila.png
+overleaf_questao2/imagens/q2_interface_execucao_equipe.png
+overleaf_questao2/imagens/q2_interface_historico_parcial.png
 overleaf_questao2/imagens/q2_interface_final_historico.png
+overleaf_questao2/imagens/q2_interface_final_equipe.png
 
 Conteudo coberto:
 

@@ -297,8 +297,11 @@ As imagens geradas para inserir no relatorio estao em:
 
 ```text
 relatorio/imagens/q2_interface_inicial.png
-relatorio/imagens/q2_interface_execucao.png
+relatorio/imagens/q2_interface_execucao_fila.png
+relatorio/imagens/q2_interface_execucao_equipe.png
+relatorio/imagens/q2_interface_historico_parcial.png
 relatorio/imagens/q2_interface_final_historico.png
+relatorio/imagens/q2_interface_final_equipe.png
 ```
 
 ### 5.6 Comparacao direta entre as versoes

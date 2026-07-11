@@ -6,20 +6,41 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{q2_interface_inicial.png}
-    \caption{Interface inicial da Clinica Veterinaria em Tempo Real antes do inicio da simulacao. A tela permite configurar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada.}
+    \caption{Tela inicial da clinica veterinaria, com os campos para configurar funcionarios, quantidade de animais e intervalo de chegada.}
     \label{fig:q2-interface-inicial}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{q2_interface_execucao.png}
-    \caption{Interface durante a execucao da simulacao com threads. A tela mostra funcionarios atendendo simultaneamente, contadores de atendimentos concluidos, emergencia registrada, receita parcial, logs em tempo real e o painel visual do pet em atendimento.}
-    \label{fig:q2-interface-execucao}
+    \includegraphics[width=\textwidth]{q2_interface_execucao_fila.png}
+    \caption{Simulacao em execucao na aba da fila prioritaria, mostrando atendimentos aguardando, logs em tempo real e emergencia sendo priorizada por uma thread de funcionario.}
+    \label{fig:q2-interface-execucao-fila}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{q2_interface_execucao_equipe.png}
+    \caption{Aba da equipe durante a execucao, com funcionarios em threads separadas realizando atendimentos simultaneos e casos emergenciais.}
+    \label{fig:q2-interface-execucao-equipe}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{q2_interface_historico_parcial.png}
+    \caption{Historico parcial durante a simulacao, registrando atendimentos finalizados enquanto outros continuam em execucao.}
+    \label{fig:q2-interface-historico-parcial}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{q2_interface_final_historico.png}
-    \caption{Interface apos a conclusao da simulacao, com 20 atendimentos finalizados. A aba de historico apresenta dados dos pets, tutores, servicos realizados, ocorrencias e valores simulados.}
+    \caption{Tela final com o historico dos atendimentos, incluindo pet, tutor, funcionario, servico, ocorrencia e valor simulado.}
     \label{fig:q2-interface-final-historico}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{q2_interface_final_equipe.png}
+    \caption{Tela final na aba da equipe, mostrando todos os funcionarios encerrados, progresso completo e botoes habilitados para salvar historico ou relatorio.}
+    \label{fig:q2-interface-final-equipe}
 \end{figure}

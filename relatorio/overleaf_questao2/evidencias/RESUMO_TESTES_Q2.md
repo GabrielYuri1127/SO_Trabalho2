@@ -73,8 +73,8 @@ Configuracao usada:
 
 ```text
 Funcionarios: 4
-Animais: 20
-Intervalo: 150 ms
+Animais: 24
+Intervalo: 40 ms
 ```
 
 Resultado observado:
@@ -82,15 +82,19 @@ Resultado observado:
 - A interface abriu corretamente.
 - A simulacao foi executada ate o final.
 - A tela mostrou fila, equipe, historico, logs, progresso, receita e painel visual.
-- Foram concluidos 20 atendimentos.
-- Foram registradas 2 emergencias.
-- Receita simulada exibida: R$ 3485,00.
-- Tempo total exibido na interface: aproximadamente 3,93 s.
+- Foram concluidos 24 atendimentos.
+- Foram registradas 3 emergencias.
+- A fila prioritaria exibiu atendimentos aguardando durante a execucao.
+- A aba de equipe mostrou varios funcionarios trabalhando simultaneamente.
+- Tempo total exibido na interface: aproximadamente 3,99 s.
 
 Prints gerados:
 
 ```text
 relatorio/imagens/q2_interface_inicial.png
-relatorio/imagens/q2_interface_execucao.png
+relatorio/imagens/q2_interface_execucao_fila.png
+relatorio/imagens/q2_interface_execucao_equipe.png
+relatorio/imagens/q2_interface_historico_parcial.png
 relatorio/imagens/q2_interface_final_historico.png
+relatorio/imagens/q2_interface_final_equipe.png
 ```
