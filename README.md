@@ -47,13 +47,16 @@ SO_Trabalho2/
     |-- RESUMO_TESTES_Q2.md
     |-- LEGENDAS_IMAGENS_Q2.md
     |-- OVERLEAF_FIGURAS_Q2.tex
+    |-- OVERLEAF_TEXTO_Q2.tex
     |-- imagens/
     |   |-- q2_interface_inicial.png
     |   |-- q2_interface_execucao.png
     |   `-- q2_interface_final_historico.png
     |-- evidencias/
     |   |-- teste_q2_sequencial.txt
-    |   `-- teste_q2_threads.txt
+    |   |-- teste_q2_threads.txt
+    |   |-- teste_q2_comparativo_sequencial_12.txt
+    |   `-- teste_q2_comparativo_threads_12.txt
     `-- FONTES_E_REFERENCIAS.md
 ```
 

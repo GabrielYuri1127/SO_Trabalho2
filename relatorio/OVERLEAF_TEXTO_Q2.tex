@@ -1,0 +1,67 @@
+% Texto da Questao 2 para inserir no Overleaf
+% Conferir no preambulo:
+% \usepackage{graphicx}
+% \usepackage{float}
+
+\subsection{Questao 2 - Clinica Veterinaria em Tempo Real}
+
+A aplicacao escolhida para a Questao 2 foi uma clinica veterinaria em tempo real. A simulacao representa a chegada de animais, cadastro na recepcao, atendimento veterinario, vacinacao, banho e tosa, exames laboratoriais e emergencias. Cada atendimento possui dados ficticios, como nome do pet, especie, raca, sexo, dados do tutor, servico solicitado, ocorrencia do atendimento, funcionario responsavel e valor cobrado.
+
+\subsubsection{Versao sequencial}
+
+Na versao sequencial, todos os passos ocorrem um por vez. Um animal chega, passa pela recepcao, recebe atendimento e somente depois o proximo animal inicia o processo. Essa versao representa uma clinica sem uso de threads, equivalente a um unico funcionario atendendo um pet por vez.
+
+\subsubsection{Versao com threads}
+
+Na versao com threads, a recepcao funciona em uma thread propria e os funcionarios trabalham em threads separadas. A fila de atendimentos foi implementada com \texttt{PriorityBlockingQueue}, permitindo que casos de emergencia tenham prioridade sobre atendimentos normais. A contagem de atendimentos concluidos utiliza \texttt{AtomicInteger}, pois varias threads podem finalizar servicos ao mesmo tempo. O metodo \texttt{Thread.sleep} foi usado para simular a duracao dos procedimentos.
+
+\subsubsection{Interface grafica}
+
+A interface grafica foi criada em Java Swing para deixar o funcionamento das threads mais visivel. Ela permite configurar a quantidade de funcionarios, a quantidade de animais e o intervalo de chegada. Durante a execucao, a tela apresenta fila prioritaria, equipe em atendimento, historico, logs em tempo real, receita simulada, tempo total e barra de progresso. A interface tambem diferencia os pets por especie e raca, usa cores diferentes para femeas e machos e permite salvar o historico em CSV ou relatorio em TXT.
+
+\subsubsection{Teste comparativo}
+
+Para comparar as duas versoes com a mesma carga, foram executados 12 atendimentos nas duas simulacoes. O resultado observado esta na Tabela~\ref{tab:q2-comparacao}.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparacao entre a versao sequencial e a versao com threads da clinica veterinaria.}
+    \label{tab:q2-comparacao}
+    \begin{tabular}{lrrrr}
+        \hline
+        Modo & Funcionarios/threads & Animais & Intervalo (ms) & Tempo (ms) \\
+        \hline
+        Sequencial & 1 & 12 & 40 & 8358,26 \\
+        Com threads & 4 & 12 & 40 & 2134,33 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Nesse teste, a versao com threads apresentou aceleracao aproximada de 3,92 vezes em relacao a versao sequencial:
+
+\[
+S = \frac{8358,26}{2134,33} \approx 3,92
+\]
+
+Os tempos foram obtidos em uma simulacao com atrasos artificiais, portanto nao representam o tempo real de atendimento veterinario. Mesmo assim, eles mostram que a execucao concorrente permite atender varios pets ao mesmo tempo, enquanto a versao sequencial fica limitada a um unico fluxo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{imagens/q2_interface_inicial.png}
+    \caption{Interface inicial da Clinica Veterinaria em Tempo Real antes do inicio da simulacao.}
+    \label{fig:q2-interface-inicial}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{imagens/q2_interface_execucao.png}
+    \caption{Interface durante a execucao da simulacao com threads, exibindo funcionarios atendendo simultaneamente, logs, fila, receita e progresso.}
+    \label{fig:q2-interface-execucao}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{imagens/q2_interface_final_historico.png}
+    \caption{Interface apos a conclusao da simulacao, com historico de atendimentos, dados dos pets, tutores, servicos e valores simulados.}
+    \label{fig:q2-interface-final-historico}
+\end{figure}

@@ -45,7 +45,29 @@ Arquivo de evidencia:
 relatorio/evidencias/teste_q2_threads.txt
 ```
 
-## Teste 3 - Interface grafica
+## Teste 3 - Comparacao direta entre sequencial e threads
+
+Para comparar as duas versoes com a mesma carga, foram executados 12 atendimentos nas duas simulacoes.
+
+| Modo | Funcionarios/threads | Animais | Intervalo (ms) | Tempo aproximado | Observacao |
+|---|---:|---:|---:|---:|---|
+| Sequencial | 1 fluxo | 12 | 40 | 8358,26 ms | Um pet atendido por vez |
+| Com threads | 4 | 12 | 40 | 2134,33 ms | Recepcao e funcionarios trabalhando em paralelo |
+
+A aceleracao observada nessa execucao foi de aproximadamente `3,92x`, calculada por:
+
+```text
+8358,26 / 2134,33 = 3,92
+```
+
+Arquivos de evidencia:
+
+```text
+relatorio/evidencias/teste_q2_comparativo_sequencial_12.txt
+relatorio/evidencias/teste_q2_comparativo_threads_12.txt
+```
+
+## Teste 4 - Interface grafica
 
 Configuracao usada:
 

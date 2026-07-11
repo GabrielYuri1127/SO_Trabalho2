@@ -14,9 +14,11 @@
 - Questao 2 com threads.
 - Interface grafica da clinica.
 - Historico e relatorio pela interface.
+- Teste comparativo da Questao 2 com 12 animais nas duas versoes.
 - README principal.
 - Guia para teste em outra maquina.
 - Relatorio com texto completo e resultados da maquina de 8 CPUs.
+- Prints da interface da Questao 2.
 
 ## Ainda falta
 
@@ -37,7 +39,7 @@ questao1_produto_escalar/grafico_speedup_12_cpu.png
 4. Enviar os resultados para inserir no relatorio.
 5. Atualizar a tabela da maquina de 12 CPUs no `RELATORIO.md`.
 6. Escrever a comparacao final entre 8 CPUs e 12 CPUs.
-7. Separar prints da interface, se forem usados na apresentacao ou no documento final.
+7. Inserir no Overleaf o texto, a tabela comparativa e os prints da Questao 2.
 
 ## Comando principal para a colega rodar
 

@@ -301,6 +301,23 @@ relatorio/imagens/q2_interface_execucao.png
 relatorio/imagens/q2_interface_final_historico.png
 ```
 
+### 5.6 Comparacao direta entre as versoes
+
+Tambem foi feito um teste com a mesma quantidade de animais nas duas versoes, para observar a diferenca entre o fluxo sequencial e o fluxo com threads.
+
+| Modo | Funcionarios/threads | Animais | Intervalo (ms) | Tempo aproximado | Observacao |
+|---|---:|---:|---:|---:|---|
+| Sequencial | 1 fluxo | 12 | 40 | 8358,26 ms | Um pet atendido por vez |
+| Com threads | 4 | 12 | 40 | 2134,33 ms | Recepcao e funcionarios em paralelo |
+
+Nesse teste, a versao com threads apresentou aceleracao aproximada de `3,92x`. Esse valor foi obtido dividindo o tempo sequencial pelo tempo da versao com threads:
+
+```text
+8358,26 / 2134,33 = 3,92
+```
+
+Os tempos nao representam uma clinica real, pois foram simulados com `Thread.sleep`, mas ajudam a demonstrar a vantagem da execucao concorrente quando existem varios atendimentos independentes.
+
 As legendas sugeridas e o codigo LaTeX para inserir essas figuras no Overleaf estao nos arquivos:
 
 ```text

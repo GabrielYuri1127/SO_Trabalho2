@@ -10,3 +10,4 @@ grafico_speedup.png
 __pycache__/
 .idea/
 .vscode/
+tmp/
