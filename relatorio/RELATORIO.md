@@ -350,14 +350,12 @@ Nos testes da Questao 1, as versoes sequencial e paralela apresentaram o mesmo r
 
 ## 8. O que falta para fechar a entrega
 
-O codigo das duas questoes esta pronto e compilando. A interface grafica tambem esta funcionando. Para finalizar completamente o relatorio, ainda falta:
+O codigo da Questao 2 esta pronto, compilando e com evidencias geradas. Para finalizar a parte da clinica veterinaria no relatorio, ainda falta:
 
-- executar a Questao 1 em outra maquina, preferencialmente com 12 CPUs;
-- salvar o CSV como `resultados_12_cpu.csv`;
-- gerar os graficos `grafico_tempos_12_cpu.png` e `grafico_speedup_12_cpu.png`;
-- inserir a tabela real da maquina de 12 CPUs neste relatorio;
-- comparar os resultados de 8 CPUs e 12 CPUs na analise final;
-- colocar prints da interface da Questao 2, se forem usados na apresentacao ou no documento final.
+- inserir no Overleaf o texto preparado em `relatorio/OVERLEAF_TEXTO_Q2.tex`;
+- subir as imagens da pasta `relatorio/imagens`;
+- conferir se a tabela comparativa da Questao 2 ficou legivel no PDF;
+- juntar esta secao com a parte da Questao 1 preparada pela equipe.
 
 ## 9. Conclusao
 

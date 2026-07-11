@@ -22,43 +22,17 @@
 
 ## Ainda falta
 
-1. Rodar a Questao 1 em outra maquina, preferencialmente com 12 CPUs.
-2. Salvar o CSV como:
+1. Inserir no Overleaf o texto da Questao 2.
+2. Subir no Overleaf a pasta ou os arquivos de imagem da Questao 2.
+3. Conferir se as figuras aparecem no PDF final.
+4. Conferir se a tabela comparativa da Questao 2 ficou com boa formatacao.
+5. Juntar a parte da Questao 2 com a parte da Questao 1 feita pela equipe.
+
+## Arquivos da Questao 2 para o Overleaf
 
 ```text
-questao1_produto_escalar/resultados_12_cpu.csv
-```
-
-3. Gerar os graficos:
-
-```text
-questao1_produto_escalar/grafico_tempos_12_cpu.png
-questao1_produto_escalar/grafico_speedup_12_cpu.png
-```
-
-4. Enviar os resultados para inserir no relatorio.
-5. Atualizar a tabela da maquina de 12 CPUs no `RELATORIO.md`.
-6. Escrever a comparacao final entre 8 CPUs e 12 CPUs.
-7. Inserir no Overleaf o texto, a tabela comparativa e os prints da Questao 2.
-
-## Comando principal para a colega rodar
-
-```powershell
-java -cp questao1_produto_escalar ExecutarExperimentos Computador_12_CPU
-```
-
-## Comando para gerar graficos
-
-```powershell
-python -m pip install -r requirements.txt
-python scripts\gerar_grafico.py questao1_produto_escalar\resultados.csv
-```
-
-## Arquivos que a colega deve devolver
-
-```text
-resultados_12_cpu.csv
-grafico_tempos_12_cpu.png
-grafico_speedup_12_cpu.png
-print da interface da clinica rodando
+relatorio/OVERLEAF_TEXTO_Q2.tex
+relatorio/imagens/q2_interface_inicial.png
+relatorio/imagens/q2_interface_execucao.png
+relatorio/imagens/q2_interface_final_historico.png
 ```
