@@ -43,6 +43,7 @@ SO_Trabalho2/
 |   `-- gerar_grafico.py
 `-- relatorio/
     |-- RELATORIO.md
+    |-- CHECKLIST_FINAL.md
     `-- FONTES_E_REFERENCIAS.md
 ```
 
